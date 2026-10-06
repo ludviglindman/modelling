@@ -32,8 +32,7 @@
         "inventory": 100
       },
       "notes": {
-        "inventory": "Inventory is an asset, so it increases by the purchase price.",
-        "ar": ""
+        "inventory": "Inventory is an asset, so it increases by the purchase price."
       },
       "keyPoint": "No profit effect: buying inventory is not a cost until the goods are sold. Cash only changes form, from cash to inventory. The cash flow statement shows it as a working capital (rörelsekapital) outflow."
     },

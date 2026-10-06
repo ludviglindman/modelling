@@ -5,63 +5,395 @@
       "abbr": "IS",
       "name": "Income statement",
       "sv": "resultaträkning",
-      "rule": "Costs: a higher cost is +"
+      "rule": "Costs: a higher cost is +",
+      "abbrSv": "RR",
+      "ruleSv": "Kostnader: en högre kostnad är +"
     },
     {
       "id": "cf",
       "abbr": "CF",
       "name": "Cash flow statement",
       "sv": "kassaflödesanalys",
-      "rule": "+ means cash comes in"
+      "rule": "+ means cash comes in",
+      "abbrSv": "KA",
+      "ruleSv": "+ betyder att pengar kommer in"
     },
     {
       "id": "bs",
       "abbr": "BS",
       "name": "Balance sheet",
       "sv": "balansräkning",
-      "rule": "+ means the line increases"
+      "rule": "+ means the line increases",
+      "abbrSv": "BR",
+      "ruleSv": "+ betyder att raden ökar"
     }
   ],
   "lines": [
-    { "id": "revenue", "statement": "is", "kind": "item", "label": "Revenue", "sv": "nettoomsättning", "short": "Revenue" },
-    { "id": "cogs", "statement": "is", "kind": "item", "cost": true, "label": "COGS", "sv": "kostnad sålda varor", "short": "COGS" },
-    { "id": "da", "statement": "is", "kind": "item", "cost": true, "label": "Depreciation and amortization", "sv": "avskrivningar", "short": "D&A" },
-    { "id": "impairments", "statement": "is", "kind": "item", "cost": true, "label": "Impairments", "sv": "nedskrivningar", "short": "Impairments" },
-    { "id": "gain_on_sale", "statement": "is", "kind": "item", "label": "Gain (loss) on asset sales", "sv": "reavinst (reaförlust)", "short": "Gain on sale" },
-    { "id": "ebit", "statement": "is", "kind": "subtotal", "label": "EBIT", "sv": "rörelseresultat", "short": "EBIT" },
-    { "id": "interest", "statement": "is", "kind": "item", "cost": true, "label": "Interest expense", "sv": "räntekostnader", "short": "Interest" },
-    { "id": "ebt", "statement": "is", "kind": "subtotal", "label": "EBT", "sv": "resultat före skatt", "short": "EBT" },
-    { "id": "tax", "statement": "is", "kind": "item", "cost": true, "label": "Tax", "sv": "skatt", "short": "Tax" },
-    { "id": "net_income", "statement": "is", "kind": "total", "label": "Net income", "sv": "årets resultat", "short": "Net income" },
-
-    { "id": "cf_net_income", "statement": "cf", "kind": "item", "label": "Net income", "sv": "årets resultat", "short": "Net income" },
-    { "id": "cf_da", "statement": "cf", "kind": "item", "label": "D&A and impairments", "sv": "av- och nedskrivningar", "short": "D&A and impairments" },
-    { "id": "cf_gain", "statement": "cf", "kind": "item", "label": "Gain (loss) on asset sales, reversed", "sv": "återförd reavinst (reaförlust)", "short": "Reversed gain on sale" },
-    { "id": "cf_wc", "statement": "cf", "kind": "item", "label": "Change in working capital", "sv": "förändring i rörelsekapital", "short": "Working capital" },
-    { "id": "cfo", "statement": "cf", "kind": "subtotal", "label": "Cash from operations", "sv": "kassaflöde från den löpande verksamheten", "short": "CFO" },
-    { "id": "capex", "statement": "cf", "kind": "item", "label": "Capex", "sv": "investeringar i anläggningstillgångar", "short": "Capex" },
-    { "id": "asset_sale_proceeds", "statement": "cf", "kind": "item", "label": "Proceeds from asset sales", "sv": "försäljning av anläggningstillgångar", "short": "Sale proceeds" },
-    { "id": "cfi", "statement": "cf", "kind": "subtotal", "label": "Cash from investing", "sv": "kassaflöde från investeringsverksamheten", "short": "CFI" },
-    { "id": "net_borrowing", "statement": "cf", "kind": "item", "label": "Net borrowing", "sv": "upptagna (amorterade) lån", "short": "Net borrowing" },
-    { "id": "equity_issuance", "statement": "cf", "kind": "item", "label": "Share issuance (buyback)", "sv": "nyemission (återköp)", "short": "Share issuance" },
-    { "id": "dividends", "statement": "cf", "kind": "item", "label": "Dividends", "sv": "utdelning", "short": "Dividends" },
-    { "id": "cff", "statement": "cf", "kind": "subtotal", "label": "Cash from financing", "sv": "kassaflöde från finansieringsverksamheten", "short": "CFF" },
-    { "id": "net_change_cash", "statement": "cf", "kind": "total", "label": "Change in cash", "sv": "kassaförändring", "short": "Change in cash" },
-
-    { "id": "cash", "statement": "bs", "group": "Assets", "kind": "item", "label": "Cash", "sv": "likvida medel", "short": "Cash" },
-    { "id": "ar", "statement": "bs", "group": "Assets", "kind": "item", "label": "Accounts receivable", "sv": "kundfordringar", "short": "AR" },
-    { "id": "inventory", "statement": "bs", "group": "Assets", "kind": "item", "label": "Inventory", "sv": "varulager", "short": "Inventory" },
-    { "id": "ppe", "statement": "bs", "group": "Assets", "kind": "item", "label": "PP&E", "sv": "materiella anläggningstillgångar", "short": "PP&E" },
-    { "id": "rou", "statement": "bs", "group": "Assets", "kind": "item", "label": "Right-of-use assets", "sv": "nyttjanderätter", "short": "Right-of-use assets" },
-    { "id": "goodwill", "statement": "bs", "group": "Assets", "kind": "item", "label": "Goodwill", "sv": "goodwill", "short": "Goodwill" },
-    { "id": "total_assets", "statement": "bs", "group": "Assets", "kind": "total", "label": "Total assets", "sv": "summa tillgångar", "short": "Total assets" },
-    { "id": "ap", "statement": "bs", "group": "Liabilities and equity", "kind": "item", "label": "Accounts payable", "sv": "leverantörsskulder", "short": "AP" },
-    { "id": "deferred_revenue", "statement": "bs", "group": "Liabilities and equity", "kind": "item", "label": "Deferred revenue", "sv": "förutbetalda intäkter", "short": "Deferred revenue" },
-    { "id": "tax_payable", "statement": "bs", "group": "Liabilities and equity", "kind": "item", "label": "Tax payable", "sv": "skatteskuld", "short": "Tax payable" },
-    { "id": "debt", "statement": "bs", "group": "Liabilities and equity", "kind": "item", "label": "Debt", "sv": "räntebärande skulder", "short": "Debt" },
-    { "id": "lease_liabilities", "statement": "bs", "group": "Liabilities and equity", "kind": "item", "label": "Lease liabilities", "sv": "leasingskulder", "short": "Lease liabilities" },
-    { "id": "share_capital", "statement": "bs", "group": "Liabilities and equity", "kind": "item", "label": "Share capital", "sv": "aktiekapital", "short": "Share capital" },
-    { "id": "retained_earnings", "statement": "bs", "group": "Liabilities and equity", "kind": "item", "label": "Retained earnings", "sv": "balanserade vinstmedel", "short": "Retained earnings" },
-    { "id": "total_le", "statement": "bs", "group": "Liabilities and equity", "kind": "total", "label": "Total liabilities and equity", "sv": "summa skulder och eget kapital", "short": "Total liabilities and equity" }
-  ]
+    {
+      "id": "revenue",
+      "statement": "is",
+      "kind": "item",
+      "label": "Revenue",
+      "sv": "nettoomsättning",
+      "short": "Revenue",
+      "shortSv": "Nettoomsättning"
+    },
+    {
+      "id": "cogs",
+      "statement": "is",
+      "kind": "item",
+      "cost": true,
+      "label": "COGS",
+      "sv": "kostnad sålda varor",
+      "short": "COGS",
+      "shortSv": "Kostnad sålda varor"
+    },
+    {
+      "id": "da",
+      "statement": "is",
+      "kind": "item",
+      "cost": true,
+      "label": "Depreciation and amortization",
+      "sv": "avskrivningar",
+      "short": "D&A",
+      "shortSv": "Avskrivningar"
+    },
+    {
+      "id": "impairments",
+      "statement": "is",
+      "kind": "item",
+      "cost": true,
+      "label": "Impairments",
+      "sv": "nedskrivningar",
+      "short": "Impairments",
+      "shortSv": "Nedskrivningar"
+    },
+    {
+      "id": "gain_on_sale",
+      "statement": "is",
+      "kind": "item",
+      "label": "Gain (loss) on asset sales",
+      "sv": "reavinst (reaförlust)",
+      "short": "Gain on sale",
+      "shortSv": "Reavinst"
+    },
+    {
+      "id": "ebit",
+      "statement": "is",
+      "kind": "subtotal",
+      "label": "EBIT",
+      "sv": "rörelseresultat",
+      "short": "EBIT",
+      "shortSv": "EBIT"
+    },
+    {
+      "id": "interest",
+      "statement": "is",
+      "kind": "item",
+      "cost": true,
+      "label": "Interest expense",
+      "sv": "räntekostnader",
+      "short": "Interest",
+      "shortSv": "Räntekostnad"
+    },
+    {
+      "id": "ebt",
+      "statement": "is",
+      "kind": "subtotal",
+      "label": "EBT",
+      "sv": "resultat före skatt",
+      "short": "EBT",
+      "shortSv": "EBT"
+    },
+    {
+      "id": "tax",
+      "statement": "is",
+      "kind": "item",
+      "cost": true,
+      "label": "Tax",
+      "sv": "skatt",
+      "short": "Tax",
+      "shortSv": "Skatt"
+    },
+    {
+      "id": "net_income",
+      "statement": "is",
+      "kind": "total",
+      "label": "Net income",
+      "sv": "årets resultat",
+      "short": "Net income",
+      "shortSv": "Årets resultat"
+    },
+    {
+      "id": "cf_net_income",
+      "statement": "cf",
+      "kind": "item",
+      "label": "Net income",
+      "sv": "årets resultat",
+      "short": "Net income",
+      "shortSv": "Årets resultat"
+    },
+    {
+      "id": "cf_da",
+      "statement": "cf",
+      "kind": "item",
+      "label": "D&A and impairments",
+      "sv": "av- och nedskrivningar",
+      "short": "D&A and impairments",
+      "shortSv": "Av- och nedskrivningar"
+    },
+    {
+      "id": "cf_gain",
+      "statement": "cf",
+      "kind": "item",
+      "label": "Gain (loss) on asset sales, reversed",
+      "sv": "återförd reavinst (reaförlust)",
+      "short": "Reversed gain on sale",
+      "shortSv": "Återfört rearesultat"
+    },
+    {
+      "id": "cf_wc",
+      "statement": "cf",
+      "kind": "item",
+      "label": "Change in working capital",
+      "sv": "förändring i rörelsekapital",
+      "short": "Working capital",
+      "shortSv": "Rörelsekapital"
+    },
+    {
+      "id": "cfo",
+      "statement": "cf",
+      "kind": "subtotal",
+      "label": "Cash from operations",
+      "sv": "kassaflöde från den löpande verksamheten",
+      "short": "CFO",
+      "shortSv": "CFO"
+    },
+    {
+      "id": "capex",
+      "statement": "cf",
+      "kind": "item",
+      "label": "Capex",
+      "sv": "investeringar i anläggningstillgångar",
+      "short": "Capex",
+      "shortSv": "Investeringar"
+    },
+    {
+      "id": "asset_sale_proceeds",
+      "statement": "cf",
+      "kind": "item",
+      "label": "Proceeds from asset sales",
+      "sv": "försäljning av anläggningstillgångar",
+      "short": "Sale proceeds",
+      "shortSv": "Försäljningslikvid"
+    },
+    {
+      "id": "cfi",
+      "statement": "cf",
+      "kind": "subtotal",
+      "label": "Cash from investing",
+      "sv": "kassaflöde från investeringsverksamheten",
+      "short": "CFI",
+      "shortSv": "CFI"
+    },
+    {
+      "id": "net_borrowing",
+      "statement": "cf",
+      "kind": "item",
+      "label": "Net borrowing",
+      "sv": "upptagna (amorterade) lån",
+      "short": "Net borrowing",
+      "shortSv": "Nettolåneupptagning"
+    },
+    {
+      "id": "equity_issuance",
+      "statement": "cf",
+      "kind": "item",
+      "label": "Share issuance (buyback)",
+      "sv": "nyemission (återköp)",
+      "short": "Share issuance",
+      "shortSv": "Nyemission"
+    },
+    {
+      "id": "dividends",
+      "statement": "cf",
+      "kind": "item",
+      "label": "Dividends",
+      "sv": "utdelning",
+      "short": "Dividends",
+      "shortSv": "Utdelning"
+    },
+    {
+      "id": "cff",
+      "statement": "cf",
+      "kind": "subtotal",
+      "label": "Cash from financing",
+      "sv": "kassaflöde från finansieringsverksamheten",
+      "short": "CFF",
+      "shortSv": "CFF"
+    },
+    {
+      "id": "net_change_cash",
+      "statement": "cf",
+      "kind": "total",
+      "label": "Change in cash",
+      "sv": "kassaförändring",
+      "short": "Change in cash",
+      "shortSv": "Kassaförändring"
+    },
+    {
+      "id": "cash",
+      "statement": "bs",
+      "group": "Assets",
+      "kind": "item",
+      "label": "Cash",
+      "sv": "likvida medel",
+      "short": "Cash",
+      "shortSv": "Likvida medel"
+    },
+    {
+      "id": "ar",
+      "statement": "bs",
+      "group": "Assets",
+      "kind": "item",
+      "label": "Accounts receivable",
+      "sv": "kundfordringar",
+      "short": "AR",
+      "shortSv": "Kundfordringar"
+    },
+    {
+      "id": "inventory",
+      "statement": "bs",
+      "group": "Assets",
+      "kind": "item",
+      "label": "Inventory",
+      "sv": "varulager",
+      "short": "Inventory",
+      "shortSv": "Varulager"
+    },
+    {
+      "id": "ppe",
+      "statement": "bs",
+      "group": "Assets",
+      "kind": "item",
+      "label": "PP&E",
+      "sv": "materiella anläggningstillgångar",
+      "short": "PP&E",
+      "shortSv": "Materiella tillgångar"
+    },
+    {
+      "id": "rou",
+      "statement": "bs",
+      "group": "Assets",
+      "kind": "item",
+      "label": "Right-of-use assets",
+      "sv": "nyttjanderätter",
+      "short": "Right-of-use assets",
+      "shortSv": "Nyttjanderätter"
+    },
+    {
+      "id": "goodwill",
+      "statement": "bs",
+      "group": "Assets",
+      "kind": "item",
+      "label": "Goodwill",
+      "sv": "goodwill",
+      "short": "Goodwill",
+      "shortSv": "Goodwill"
+    },
+    {
+      "id": "total_assets",
+      "statement": "bs",
+      "group": "Assets",
+      "kind": "total",
+      "label": "Total assets",
+      "sv": "summa tillgångar",
+      "short": "Total assets",
+      "shortSv": "Summa tillgångar"
+    },
+    {
+      "id": "ap",
+      "statement": "bs",
+      "group": "Liabilities and equity",
+      "kind": "item",
+      "label": "Accounts payable",
+      "sv": "leverantörsskulder",
+      "short": "AP",
+      "shortSv": "Leverantörsskulder"
+    },
+    {
+      "id": "deferred_revenue",
+      "statement": "bs",
+      "group": "Liabilities and equity",
+      "kind": "item",
+      "label": "Deferred revenue",
+      "sv": "förutbetalda intäkter",
+      "short": "Deferred revenue",
+      "shortSv": "Förutbetalda intäkter"
+    },
+    {
+      "id": "tax_payable",
+      "statement": "bs",
+      "group": "Liabilities and equity",
+      "kind": "item",
+      "label": "Tax payable",
+      "sv": "skatteskuld",
+      "short": "Tax payable",
+      "shortSv": "Skatteskuld"
+    },
+    {
+      "id": "debt",
+      "statement": "bs",
+      "group": "Liabilities and equity",
+      "kind": "item",
+      "label": "Debt",
+      "sv": "räntebärande skulder",
+      "short": "Debt",
+      "shortSv": "Räntebärande skulder"
+    },
+    {
+      "id": "lease_liabilities",
+      "statement": "bs",
+      "group": "Liabilities and equity",
+      "kind": "item",
+      "label": "Lease liabilities",
+      "sv": "leasingskulder",
+      "short": "Lease liabilities",
+      "shortSv": "Leasingskulder"
+    },
+    {
+      "id": "share_capital",
+      "statement": "bs",
+      "group": "Liabilities and equity",
+      "kind": "item",
+      "label": "Share capital",
+      "sv": "aktiekapital",
+      "short": "Share capital",
+      "shortSv": "Aktiekapital"
+    },
+    {
+      "id": "retained_earnings",
+      "statement": "bs",
+      "group": "Liabilities and equity",
+      "kind": "item",
+      "label": "Retained earnings",
+      "sv": "balanserade vinstmedel",
+      "short": "Retained earnings",
+      "shortSv": "Balanserade vinstmedel"
+    },
+    {
+      "id": "total_le",
+      "statement": "bs",
+      "group": "Liabilities and equity",
+      "kind": "total",
+      "label": "Total liabilities and equity",
+      "sv": "summa skulder och eget kapital",
+      "short": "Total liabilities and equity",
+      "shortSv": "Summa skulder och eget kapital"
+    }
+  ],
+  "groupsSv": {
+    "Assets": "Tillgångar",
+    "Liabilities and equity": "Skulder och eget kapital"
+  }
 }

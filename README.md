@@ -9,8 +9,10 @@ index.html            sidan
 css/style.css         utseende
 js/engine.js          all redovisningslogik: räknar facit, rättar, skriver stegen
 js/app.js             gränssnittet
+js/i18n.js            sidans texter på engelska och svenska
 data/lines.json       radlistan (samma rader i alla övningar)
-data/exercises.json   övningarna
+data/exercises.json   övningarna (engelska)
+data/exercises.sv.json  svenska texter till övningarna, nyckel = övningens id
 tools/validate.js     kontrollerar alla övningar innan publicering
 ```
 
@@ -27,7 +29,8 @@ python3 -m http.server 8000
 ## Lägga till en övning
 
 1. Lägg till ett objekt i `data/exercises.json`. Ange bara händelsens direkta effekter före skatt i `inputs`. Motorn räknar själv fram skatt, årets resultat, hela kassaflödesanalysen, kassan, balanserade vinstmedel och alla summor.
-2. Kör `node tools/validate.js <id>`. Skriptet kontrollerar att balansräkningen balanserar vid flera skattesatser och skriver ut facit och stegen.
+2. Lägg till motsvarande svenska texter i `data/exercises.sv.json` (rubrik, händelse, antaganden, förklaringar, huvudpoäng). Antal antaganden och nycklarna i `notes` ska vara samma som på engelska, och `{platshållare}` i `keyPoint` ska vara identiska. Utan översättning visas övningen på engelska även i svenskt läge, men valideringen slår larm.
+3. Kör `node tools/validate.js <id>` (lägg till `sv` efter id för svensk utskrift). Skriptet kontrollerar att balansräkningen balanserar vid flera skattesatser och skriver ut facit och stegen.
 3. Pusha. Övningen går live direkt.
 
 ### Fält
@@ -72,6 +75,12 @@ Allt annat räknar motorn fram. Två saker att hålla koll på:
   "keyPoint": "... The lower tax bill, {abs:tax}, is the only cash effect."
 }
 ```
+
+## Språk, nivåer och slump
+
+Språkknappen (EN / SV) byter hela sidan mellan engelska och svenska, ett språk i taget. Valet sparas i webbläsaren och startspråket följer webbläsarens språk. Rubriker, förklaringar och facit-steg finns på båda språken; i svenskt läge visas engelsk term som underrad. Decimaltecknet följer språket (punkt eller komma), men både komma och punkt fungerar alltid när man skriver.
+
+Svårighetsgraden väljs i en rullista (alla nivåer, 1, 2 eller 3) och filtrerar övningslistan. Knappen Random/Slumpa väljer en övning på vald nivå, aldrig samma som den som visas.
 
 ## Rättning
 

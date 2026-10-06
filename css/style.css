@@ -652,8 +652,11 @@ ol.steps .n {
 .btn.primary:hover { filter: brightness(1.08); }
 
 @media (max-width: 560px) {
-  .controls { flex-wrap: nowrap; width: 100%; }
-  .controls .control:first-child { flex: 1 1 auto; }
+  .controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; width: 100%; gap: 8px 10px; }
+  .control.c-level { order: 1; }
+  .control.c-random { order: 2; }
+  .control.c-ex { order: 3; }
+  .control.c-tax { order: 4; }
   .control select { width: 100%; }
   .full { display: none; }
   .short { display: inline; }
@@ -681,3 +684,36 @@ ol.steps .n {
 .field input.bad-num { color: var(--bad); text-decoration: underline wavy var(--bad); }
 .numhint { margin: 0 0 var(--space-3, 0.75rem); padding: 0.5rem 0.75rem; border: 1px solid var(--bad); background: var(--bad-soft); color: var(--bad); border-radius: 6px; font-size: var(--step--1); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+}
+
+.lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 11px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--field);
+  color: var(--muted);
+  font-family: var(--font-num);
+  font-size: var(--step--1);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+.lang svg { width: 16px; height: 16px; stroke: currentColor; fill: none; }
+.lang .opt.on { color: var(--ink); font-weight: 500; }
+.lang:hover { border-color: var(--rule-strong); }
+.lang:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.btn.rand { height: 36px; }
+.control select { min-width: 0; }
+.control.c-level select { max-width: 17rem; }
+.control.c-ex select { max-width: 20rem; }

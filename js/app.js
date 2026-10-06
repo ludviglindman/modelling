@@ -1,19 +1,27 @@
-/* User interface for the flow trainer. All accounting lives in engine.js. */
+/* User interface for the flow trainer. All accounting lives in engine.js, all texts in i18n.js and data/. */
 (function () {
   'use strict';
 
   var E = window.FlowEngine;
+  var I = window.FlowI18n;
+  var LANG_KEY = 'flowtrainer.lang';
+
   var state = {
     linesData: null,
-    exercises: [],
-    index: 0,
+    exercises: [],     // all exercises
+    list: [],          // exercises at the selected difficulty
+    tr: {},            // Swedish texts, keyed by exercise id
+    index: 0,          // position in state.list
+    filter: 'all',
+    lang: 'en',
     t: E.DEFAULT_TAX_RATE,
     checked: false,
-    broken: false
+    broken: false,
+    problems: []
   };
 
   var $ = function (id) { return document.getElementById(id); };
-  var LEVELS = { 1: 'One event', 2: 'Two events in a row', 3: 'Second-order effects' };
+  var T = function (key, vars) { return I.t(state.lang, key, vars); };
 
   function el(tag, attrs, children) {
     var node = document.createElement(tag);
@@ -25,6 +33,8 @@
     (children || []).forEach(function (c) { if (c) node.appendChild(c); });
     return node;
   }
+
+  function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 
   function fetchJson(url) {
     return fetch(url, { cache: 'no-cache' }).then(function (r) {
@@ -43,16 +53,76 @@
     box.hidden = false;
   }
 
-  // ---------- Build the three statements once ----------
+  // ---------- Language ----------
+
+  function storedLang() {
+    try {
+      var s = localStorage.getItem(LANG_KEY);
+      if (s && I.STR[s]) return s;
+    } catch (e) { /* storage may be blocked */ }
+    var nav = (navigator.language || '').toLowerCase();
+    return nav.indexOf('sv') === 0 ? 'sv' : 'en';
+  }
+
+  function saveLang() {
+    try { localStorage.setItem(LANG_KEY, state.lang); } catch (e) { /* ignore */ }
+  }
+
+  function applyStatic() {
+    document.documentElement.lang = state.lang;
+    document.title = T('pageTitle');
+    var meta = document.querySelector('meta[name="description"]');
+    if (meta) meta.setAttribute('content', T('pageDesc'));
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-i18n]'), function (n) {
+      n.textContent = T(n.getAttribute('data-i18n'));
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('[data-i18n-attr]'), function (n) {
+      n.getAttribute('data-i18n-attr').split(';').forEach(function (pair) {
+        var p = pair.split(':');
+        n.setAttribute(p[0], T(p[1]));
+      });
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#langBtn .opt'), function (o) {
+      o.classList.toggle('on', o.dataset.l === state.lang);
+    });
+
+    // Keep the tax rate's decimal separator in step with the language.
+    var rate = $('taxRate');
+    rate.value = rate.value.replace(/[.,]/, state.lang === 'sv' ? ',' : '.');
+  }
+
+  function setLang(lang) {
+    var saved = readRaw();
+    state.lang = lang;
+    E.setLang(lang);
+    saveLang();
+    applyStatic();
+    fillLevelSelect();
+    buildStatements();
+    writeRaw(saved);
+    fillSelect();
+    renderTexts();
+    updateChecks();
+    if (state.checked) check();
+  }
+
+  function localized(ex) { return E.localize(ex, state.tr, state.lang); }
+
+  // ---------- Build the three statements ----------
 
   function buildStatements() {
     var host = $('statements');
+    var sv = state.lang === 'sv';
     host.innerHTML = '';
     state.linesData.statements.forEach(function (st) {
       var head = el('div', { class: 'statement-head' }, [
-        el('span', { class: 'abbr', text: st.abbr }),
-        el('h2', {}, [document.createTextNode(st.name + ' '), el('span', { text: '(' + st.sv + ')' })]),
-        el('p', { text: st.rule })
+        el('span', { class: 'abbr', text: sv ? st.abbrSv : st.abbr }),
+        el('h2', {}, [
+          document.createTextNode((sv ? cap(st.sv) : st.name) + ' '),
+          el('span', { text: '(' + (sv ? st.name : st.sv) + ')' })
+        ]),
+        el('p', { text: sv ? st.ruleSv : st.rule })
       ]);
 
       var colgroup = el('colgroup', {}, [
@@ -60,19 +130,21 @@
         el('col', { class: 'c-key' }), el('col', { class: 'c-mark' })
       ]);
       var thead = el('thead', {}, [el('tr', {}, [
-        el('th', { scope: 'col', text: 'Line' }),
-        el('th', { scope: 'col', text: 'Change' }),
-        el('th', { scope: 'col', class: 'h-key', text: 'Answer' }),
-        el('th', { scope: 'col', class: 'h-key' }, [el('span', { class: 'visually-hidden', text: 'Result' })])
+        el('th', { scope: 'col', text: T('colLine') }),
+        el('th', { scope: 'col', text: T('colChange') }),
+        el('th', { scope: 'col', class: 'h-key', text: T('colAnswer') }),
+        el('th', { scope: 'col', class: 'h-key' }, [el('span', { class: 'visually-hidden', text: T('colResult') })])
       ])]);
       var tbody = el('tbody');
       var lastGroup = null;
 
       state.linesData.lines.filter(function (l) { return l.statement === st.id; }).forEach(function (line) {
         if (line.group && line.group !== lastGroup) {
-          tbody.appendChild(el('tr', { class: 'group' }, [el('th', { colspan: '4', scope: 'rowgroup', text: line.group })]));
+          var g = sv ? ((state.linesData.groupsSv || {})[line.group] || line.group) : line.group;
+          tbody.appendChild(el('tr', { class: 'group' }, [el('th', { colspan: '4', scope: 'rowgroup', text: g })]));
           lastGroup = line.group;
         }
+        var label = E.lineLabel(line);
         var input = el('input', {
           id: 'in-' + line.id,
           type: 'text',
@@ -81,16 +153,16 @@
           spellcheck: 'false',
           enterkeyhint: 'next',
           placeholder: '0',
-          'aria-label': line.label + ', change'
+          'aria-label': T('changeAria', { l: label })
         });
         input.dataset.line = line.id;
-        var sign = el('button', { type: 'button', class: 'sign', tabindex: '-1', 'aria-label': 'Flip sign of ' + line.label, text: '±' });
+        var sign = el('button', { type: 'button', class: 'sign', tabindex: '-1', 'aria-label': T('flipSign', { l: label }), text: '±' });
         sign.dataset.line = line.id;
 
         var tr = el('tr', { class: 'row kind-' + line.kind, 'data-line': line.id }, [
           el('th', { scope: 'row' }, [
-            el('span', { class: 'lbl', text: line.label }),
-            el('span', { class: 'sv', text: line.sv })
+            el('span', { class: 'lbl', text: label }),
+            el('span', { class: 'sv', text: E.lineSub(line) })
           ]),
           el('td', { class: 'in' }, [el('div', { class: 'field' }, [sign, input])]),
           el('td', { class: 'key' }),
@@ -99,8 +171,8 @@
         tbody.appendChild(tr);
       });
 
-      var table = el('table', { class: 'lines' }, [colgroup, thead, tbody]);
-      host.appendChild(el('section', { class: 'statement', 'aria-label': st.name }, [head, el('div', { class: 'table-scroll' }, [table])]));
+      var table = el('table', { class: 'lines' + (state.checked ? ' checked' : '') }, [colgroup, thead, tbody]);
+      host.appendChild(el('section', { class: 'statement', 'aria-label': sv ? cap(st.sv) : st.name }, [head, el('div', { class: 'table-scroll' }, [table])]));
     });
   }
 
@@ -118,33 +190,81 @@
     return a;
   }
 
+  // Raw text of every field, so a language switch keeps what the user typed.
+  function readRaw() {
+    var r = {};
+    allInputs().forEach(function (inp) { r[inp.dataset.line] = inp.value; });
+    return r;
+  }
+
+  function writeRaw(r) {
+    allInputs().forEach(function (inp) { if (r[inp.dataset.line] !== undefined) inp.value = r[inp.dataset.line]; });
+  }
+
+  // ---------- Difficulty and exercise lists ----------
+
+  function levelName(n) { return T('levelShort' + n); }
+
+  function fillLevelSelect() {
+    var sel = $('level');
+    sel.innerHTML = '';
+    var opts = [['all', T('levelAll')], ['1', T('level1')], ['2', T('level2')], ['3', T('level3')]];
+    opts.forEach(function (o) {
+      var count = o[0] === 'all' ? state.exercises.length : state.exercises.filter(function (x) { return String(x.level) === o[0]; }).length;
+      if (o[0] !== 'all' && count === 0) return;
+      sel.appendChild(el('option', { value: o[0], text: o[1] + ' (' + count + ')' }));
+    });
+    sel.value = state.filter;
+  }
+
+  function buildList(preferId) {
+    var f = state.filter;
+    state.list = state.exercises.filter(function (x) { return f === 'all' || String(x.level) === f; });
+    var i = state.list.findIndex(function (x) { return x.id === preferId; });
+    state.index = i >= 0 ? i : 0;
+    fillSelect();
+  }
+
+  function fillSelect() {
+    var sel = $('exercise');
+    sel.innerHTML = '';
+    state.list.forEach(function (ex, i) {
+      sel.appendChild(el('option', { value: ex.id, text: (i + 1) + '. ' + localized(ex).title }));
+    });
+    if (current()) sel.value = current().id;
+  }
+
   // ---------- Exercise ----------
 
-  function current() { return state.exercises[state.index]; }
+  function current() { return state.list[state.index]; }
 
-  function renderExercise() {
+  function renderTexts() {
     var ex = current();
-    $('fatal').hidden = true;
-    $('eventMeta').textContent = 'Exercise ' + (state.index + 1) + ' of ' + state.exercises.length + ' · Level ' + ex.level + ': ' + (LEVELS[ex.level] || '');
-    $('eventTitle').textContent = ex.title;
-
-    var text = ex.event || (ex.events || []).map(function (e, i) { return (i + 1) + '. ' + e.text; }).join(' ');
-    $('eventText').textContent = text;
+    var lx = localized(ex);
+    $('eventMeta').textContent = T('labelExercise') + ' ' + (state.index + 1) + ' ' + T('ofWord') + ' ' + state.list.length +
+      ' · ' + T('levelWord') + ' ' + ex.level + ': ' + levelName(ex.level);
+    $('eventTitle').textContent = lx.title;
+    $('eventText').textContent = lx.event || (lx.events || []).map(function (e, i) { return (i + 1) + '. ' + e.text; }).join(' ');
 
     var ul = $('assumptions');
     ul.innerHTML = '';
-    (ex.assumptions || []).forEach(function (a) { ul.appendChild(el('li', { text: a })); });
+    (lx.assumptions || []).forEach(function (a) { ul.appendChild(el('li', { text: a })); });
 
     $('exercise').value = ex.id;
+    if (state.problems.length) showFatal(T('dataError'), state.problems);
+    else $('fatal').hidden = true;
+    $('nextBtn').hidden = !state.checked || state.index >= state.list.length - 1;
+  }
+
+  function renderExercise() {
+    var ex = current();
     if (location.hash.slice(1) !== ex.id) {
       try { history.replaceState(null, '', '#' + ex.id); } catch (e) { /* ignore */ }
     }
-
-    var problems = E.validateExercise(ex, lineIds());
-    state.broken = problems.length > 0;
+    state.problems = E.validateExercise(ex, lineIds());
+    state.broken = state.problems.length > 0;
     $('checkBtn').disabled = state.broken;
-    if (state.broken) showFatal('This exercise has a data error, so it cannot be graded. Fix it in data/exercises.json:', problems);
-
+    renderTexts();
     clearAnswers();
   }
 
@@ -182,8 +302,8 @@
       inp.classList.toggle('bad-num', isBad);
       if (isBad) { bad++; inp.setAttribute('aria-invalid', 'true'); } else inp.removeAttribute('aria-invalid');
     });
-    var hint = $('numHint');
-    hint.hidden = bad === 0;
+    $('numHint').hidden = bad === 0;
+
     var c = E.userChecks(answers);
     paintChip($('chkBalance'), c.balance);
     paintChip($('chkCash'), c.cash);
@@ -199,7 +319,7 @@
       v.textContent = '✓';
     } else {
       chip.classList.add('off');
-      v.textContent = 'off ' + E.fmt(Math.abs(r.diff));
+      v.textContent = (state.lang === 'sv' ? 'fel ' : 'off ') + E.fmt(Math.abs(r.diff));
     }
   }
 
@@ -223,34 +343,33 @@
       tr.querySelector('.key').textContent = E.fmtSigned(r.expected);
       var mark = tr.querySelector('.mark');
       mark.textContent = r.correct ? '✓' : '✗';
-      mark.setAttribute('aria-label', r.correct ? 'Correct' : 'Wrong');
+      mark.setAttribute('aria-label', r.correct ? T('correct') : T('wrong'));
     });
 
     var score = $('score');
     score.innerHTML = '';
     var all = result.correct === result.total;
     score.className = 'score' + (all ? ' all' : '');
-    score.appendChild(el('span', { class: 'full', text: all ? 'All ' + result.total + ' lines correct' : result.correct + ' of ' + result.total + ' lines correct' }));
+    score.appendChild(el('span', { class: 'full', text: all ? T('allCorrect', { n: result.total }) : T('someCorrect', { c: result.correct, n: result.total }) }));
     score.appendChild(el('span', { class: 'short', text: result.correct + '/' + result.total }));
-    var link = el('a', { href: '#solution', text: 'Solution' });
+    var link = el('a', { href: '#solution', text: T('solutionLink') });
     link.addEventListener('click', function (e) {
       e.preventDefault();
       $('solution').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
     score.appendChild(link);
 
-    $('nextBtn').hidden = state.index >= state.exercises.length - 1;
+    $('nextBtn').hidden = state.index >= state.list.length - 1;
     renderSolution();
   }
 
   function renderSolution() {
-    var ex = current();
-    var out = E.explain(ex, state.linesData, state.t);
+    var out = E.explain(localized(current()), state.linesData, state.t);
     var kp = $('keyPoint');
     kp.innerHTML = '';
     kp.hidden = !out.keyPoint;
     if (out.keyPoint) {
-      kp.appendChild(el('b', { text: 'Key point' }));
+      kp.appendChild(el('b', { text: T('keyPoint') }));
       kp.appendChild(document.createTextNode(out.keyPoint));
     }
 
@@ -321,9 +440,28 @@
   }
 
   function goTo(i) {
-    state.index = Math.max(0, Math.min(state.exercises.length - 1, i));
+    state.index = Math.max(0, Math.min(state.list.length - 1, i));
     renderExercise();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goToId(id) {
+    var i = state.list.findIndex(function (x) { return x.id === id; });
+    if (i < 0 && state.exercises.some(function (x) { return x.id === id; })) {
+      state.filter = 'all';
+      $('level').value = 'all';
+      buildList(id);
+      i = state.index;
+    }
+    if (i >= 0) goTo(i);
+  }
+
+  function randomExercise() {
+    var n = state.list.length;
+    if (n < 2) return;
+    var i = Math.floor(Math.random() * (n - 1));
+    if (i >= state.index) i++;   // never the same exercise twice in a row
+    goTo(i);
   }
 
   function wire() {
@@ -342,46 +480,49 @@
     $('checkBtn').addEventListener('click', check);
     $('clearBtn').addEventListener('click', clearAnswers);
     $('nextBtn').addEventListener('click', function () { goTo(state.index + 1); });
+    $('randomBtn').addEventListener('click', randomExercise);
     $('taxRate').addEventListener('input', onRate);
+    $('langBtn').addEventListener('click', function () { setLang(state.lang === 'en' ? 'sv' : 'en'); });
+    $('level').addEventListener('change', function (e) {
+      var keep = current() ? current().id : null;
+      state.filter = e.target.value;
+      buildList(keep);
+      var stays = current() && current().id === keep;
+      if (stays) { fillSelect(); renderTexts(); } else goTo(0);
+    });
     $('exercise').addEventListener('change', function (e) {
-      var i = state.exercises.findIndex(function (x) { return x.id === e.target.value; });
+      var i = state.list.findIndex(function (x) { return x.id === e.target.value; });
       if (i >= 0) goTo(i);
     });
     window.addEventListener('hashchange', function () {
-      var i = state.exercises.findIndex(function (x) { return x.id === location.hash.slice(1); });
-      if (i >= 0 && i !== state.index) goTo(i);
-    });
-  }
-
-  function fillSelect() {
-    var sel = $('exercise');
-    sel.innerHTML = '';
-    state.exercises.forEach(function (ex, i) {
-      sel.appendChild(el('option', {
-        value: ex.id,
-        text: (i + 1) + '. ' + ex.title
-      }));
+      var id = location.hash.slice(1);
+      if (current() && id !== current().id) goToId(id);
     });
   }
 
   function init() {
-    Promise.all([fetchJson('data/lines.json'), fetchJson('data/exercises.json')])
+    state.lang = storedLang();
+    E.setLang(state.lang);
+    applyStatic();
+
+    var sv = fetchJson('data/exercises.sv.json').catch(function () { return {}; });   // English still works without it
+    Promise.all([fetchJson('data/lines.json'), fetchJson('data/exercises.json'), sv])
       .then(function (res) {
         state.linesData = res[0];
         state.exercises = res[1].exercises || [];
+        state.tr = res[2] || {};
         if (!state.exercises.length) {
-          showFatal('No exercises found in data/exercises.json.');
+          showFatal(T('noExercises'));
           return;
         }
         buildStatements();
-        fillSelect();
+        fillLevelSelect();
+        buildList(location.hash.slice(1));
         wire();
-        var start = state.exercises.findIndex(function (x) { return x.id === location.hash.slice(1); });
-        state.index = start >= 0 ? start : 0;
         renderExercise();
       })
       .catch(function (err) {
-        showFatal('Could not load the exercise data. Open the page through a web server, not as a local file.', [String(err.message || err)]);
+        showFatal(T('loadError'), [String(err.message || err)]);
       });
   }
 

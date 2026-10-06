@@ -1,0 +1,392 @@
+{
+  "e01-depreciation": {
+    "title": "Avskrivningarna ökar",
+    "event": "Avskrivningarna (depreciation) ökar med 100. Följ förändringen genom alla tre rapporterna.",
+    "assumptions": [
+      "Bolaget är lönsamt, så lägre resultat före skatt ger lägre skatt.",
+      "Skatten betalas kontant under samma period.",
+      "Bokföringsmässiga och skattemässiga avskrivningar är lika, så hela beloppet är avdragsgillt."
+    ],
+    "notes": {
+      "da": "En kostnad i resultaträkningen. Inga pengar lämnar bolaget.",
+      "ppe": "Avskrivningen sänker maskinernas bokförda värde."
+    },
+    "keyPoint": "Resultatet sjunker men kassan ökar. Avskrivningar är ingen kontant kostnad, men de sänker det skattepliktiga resultatet. Den lägre skatten, {abs:tax}, är den enda kassaeffekten."
+  },
+  "e02-inventory-cash": {
+    "title": "Varulager köps kontant",
+    "event": "Bolaget köper varulager (inventory) för 100 och betalar kontant.",
+    "assumptions": [
+      "Inget säljs ännu."
+    ],
+    "notes": {
+      "inventory": "Varulager är en tillgång och ökar med inköpspriset."
+    },
+    "keyPoint": "Ingen resultateffekt: ett lagerinköp blir en kostnad först när varorna säljs. Kassan byter bara form, från kontanter till varulager. I kassaflödesanalysen visas det som en utbetalning i rörelsekapitalet (working capital)."
+  },
+  "e03-inventory-credit": {
+    "title": "Varulager köps på kredit",
+    "event": "Bolaget köper varulager för 100 och får fakturan, som betalas nästa period.",
+    "assumptions": [
+      "Inget säljs ännu."
+    ],
+    "notes": {
+      "inventory": "Varorna ligger på lagret, så varulagret ökar.",
+      "ap": "Fakturan är obetald, så leverantörsskulderna (accounts payable) ökar."
+    },
+    "keyPoint": "Varken resultat eller kassa påverkas. Varulager och leverantörsskulder ökar båda med 100, så rörelsekapitalet ändras med +100 − 100 = 0."
+  },
+  "e04-inventory-sold-profit": {
+    "title": "Varulager säljs med vinst",
+    "event": "Bolaget säljer varulager som kostade 100 för 150, som kunden betalar kontant.",
+    "assumptions": [
+      "Bolaget är lönsamt, så en ändring av resultatet före skatt ändrar skatten.",
+      "Skatten betalas kontant under samma period."
+    ],
+    "notes": {
+      "revenue": "Försäljningspriset.",
+      "cogs": "Kostnaden för varorna som lämnade lagret (cost of goods sold).",
+      "inventory": "Varorna är borta, så varulagret minskar med deras kostnad."
+    },
+    "keyPoint": "Kassan ökar med 150 minus skatten på vinsten på 50, alltså {abs:tax}. De frigjorda 100 i varulager visas som en positiv post i rörelsekapitalet, eftersom en tillgång minskade."
+  },
+  "e05-machine-cash": {
+    "title": "Maskin köps kontant",
+    "event": "Bolaget köper en maskin för 100 och betalar kontant.",
+    "assumptions": [
+      "Ingen avskrivning under perioden än."
+    ],
+    "notes": {
+      "ppe": "En ny tillgång tas upp till inköpspriset.",
+      "capex": "Utbetalning under investeringsverksamheten (capex), visas som ett negativt tal."
+    },
+    "keyPoint": "Ingen effekt på resultatet. Kassan lämnar bolaget under investeringar och samma belopp syns i maskinerna, så summa tillgångar är oförändrad."
+  },
+  "e06-machine-loan": {
+    "title": "Maskin köps med lån",
+    "event": "Bolaget köper en maskin för 100, helt betald av ett nytt banklån på 100.",
+    "assumptions": [
+      "Lånet betalas ut och leverantören betalas under samma period.",
+      "Ränta bortses från i denna period."
+    ],
+    "notes": {
+      "ppe": "Ny tillgång till inköpspriset.",
+      "capex": "Leverantören får 100, en utbetalning under investeringar.",
+      "net_borrowing": "Banken betalar ut 100, en inbetalning under finansiering.",
+      "debt": "De räntebärande skulderna (interest-bearing debt) ökar."
+    },
+    "keyPoint": "Investerings- och finansieringsflödena tar ut varandra, så kassan ändras inte. Båda sidor av balansräkningen växer med 100."
+  },
+  "e07-ar-increase": {
+    "title": "Försäljning på kredit",
+    "event": "Bolaget säljer varor för 100 på kredit. Varornas kostnad bortses från.",
+    "assumptions": [
+      "Bolaget är lönsamt, så en ändring av resultatet före skatt ändrar skatten.",
+      "Skatten betalas kontant under samma period.",
+      "Kunden har inte betalat än."
+    ],
+    "notes": {
+      "revenue": "Intäkten redovisas när varorna levereras, inte när kunden betalar.",
+      "ar": "Kunden är skyldig 100, så kundfordringarna (accounts receivable) ökar."
+    },
+    "keyPoint": "Resultatet är {net_income} men kassaflödet bara {net_change_cash}. Bolaget betalar {abs:tax} i skatt på en intäkt det inte fått betalt för än; resten av vinsten är bunden i kundfordringar."
+  },
+  "e08-ap-increase": {
+    "title": "Kostnad på kredit",
+    "event": "Bolaget får tjänster för 100, bokförda som kostnad sålda varor, och leverantörsfakturan är obetald.",
+    "assumptions": [
+      "Bolaget är lönsamt, så en ändring av resultatet före skatt ändrar skatten.",
+      "Skatten betalas kontant under samma period."
+    ],
+    "notes": {
+      "cogs": "En kostnad i resultaträkningen.",
+      "ap": "Bolaget är skyldig leverantören 100."
+    },
+    "keyPoint": "Resultatet sjunker med {abs:net_income}, men kassan ökar med {net_change_cash}. Fakturan är obetald, så kostnaden på 100 har inte lämnat bolaget än; den enda verkliga kassaeffekten är skattebesparingen på {abs:tax}."
+  },
+  "e09-prepayment": {
+    "title": "Kunden betalar i förskott",
+    "event": "En kund betalar 100 i förskott för varor som levereras nästa period.",
+    "assumptions": [
+      "Inget levereras under perioden."
+    ],
+    "notes": {
+      "deferred_revenue": "Bolaget har fått betalt för något det fortfarande är skyldigt kunden. Det är en skuld (förutbetald intäkt, deferred revenue), inte en intäkt."
+    },
+    "keyPoint": "Intäkten är noll eftersom inget levereras. Kassan ökar ändå med 100, via rörelsekapitalet. Kassaflöde och resultat skiljer sig åt, utan att några andra tillgångar än kassan ändras."
+  },
+  "e10-loan-drawn": {
+    "title": "Nytt lån",
+    "event": "Bolaget lånar 100 av banken och behåller dem som kassa.",
+    "notes": {
+      "net_borrowing": "Inbetalning under finansiering.",
+      "debt": "Skulderna ökar med lånebeloppet."
+    },
+    "keyPoint": "Ett lån är varken intäkt eller vinst. Kassa och skulder ökar båda med 100."
+  },
+  "e11-loan-repaid": {
+    "title": "Lån amorteras",
+    "event": "Bolaget amorterar 100 av ett banklån med egna kassamedel.",
+    "notes": {
+      "net_borrowing": "Utbetalning under finansiering, visas som ett negativt tal.",
+      "debt": "Skulderna minskar med det amorterade beloppet."
+    },
+    "keyPoint": "Amortering är ingen kostnad. Den sänker kassa och skulder lika mycket. Bara räntan finns i resultaträkningen."
+  },
+  "e12-interest-paid": {
+    "title": "Ränta betalas",
+    "event": "Bolaget betalar 10 i räntekostnad (interest expense) kontant på sina lån.",
+    "assumptions": [
+      "Bolaget är lönsamt, så en ändring av resultatet före skatt ändrar skatten.",
+      "Skatten betalas kontant under samma period.",
+      "Räntan är helt avdragsgill."
+    ],
+    "notes": {
+      "interest": "En finansiell kostnad under EBIT."
+    },
+    "keyPoint": "Räntan sänker EBT med 10, så skatten sjunker med {abs:tax}. Den kontanta kostnaden blir därför 10 minus skattebesparingen, {abs:net_change_cash}, vilket är lika med minskningen av årets resultat."
+  },
+  "e13-share-issue": {
+    "title": "Nyemission",
+    "event": "Bolaget emitterar nya aktier och får 100 i kassan.",
+    "notes": {
+      "equity_issuance": "Inbetalning under finansiering.",
+      "share_capital": "Inbetalt eget kapital ökar. Det är inte balanserade vinstmedel, eftersom det inte är vinst."
+    },
+    "keyPoint": "En emission påverkar inte resultaträkningen. Kassa och eget kapital ökar båda med 100."
+  },
+  "e14-dividend": {
+    "title": "Utdelning",
+    "event": "Bolaget betalar en utdelning (dividend) på 100 kontant.",
+    "notes": {
+      "dividends": "Utbetalning under finansiering, visas som ett negativt tal."
+    },
+    "keyPoint": "En utdelning är ingen kostnad. Den når aldrig resultaträkningen utan minskar balanserade vinstmedel direkt. Kassa och eget kapital minskar båda med 100."
+  },
+  "e15-goodwill-impairment": {
+    "title": "Nedskrivning av goodwill",
+    "event": "Bolaget skriver ned goodwill med 100 efter att ett förvärv underpresterat.",
+    "assumptions": [
+      "Nedskrivningar av goodwill är inte avdragsgilla i Sverige.",
+      "Bolaget är i övrigt lönsamt.",
+      "Skatten betalas kontant."
+    ],
+    "notes": {
+      "impairments": "En kostnad utan kassaflöde i resultaträkningen (impairment).",
+      "goodwill": "Tillgången skrivs ned med samma belopp."
+    },
+    "keyPoint": "Årets resultat sjunker med hela 100, eftersom kostnaden inte är avdragsgill och skatten förblir {tax}. Kassan ändras inte: nedskrivningen läggs tillbaka i kassaflödesanalysen."
+  },
+  "e16-inventory-writedown": {
+    "title": "Nedskrivning av varulager",
+    "event": "En del av varulagret har blivit obsolet. Bolaget skriver ned det med 40.",
+    "assumptions": [
+      "Bolaget är lönsamt, så en ändring av resultatet före skatt ändrar skatten.",
+      "Skatten betalas kontant under samma period.",
+      "Nedskrivningen är avdragsgill."
+    ],
+    "notes": {
+      "cogs": "En lagernedskrivning bokförs här i kostnad sålda varor, inte som nedskrivning.",
+      "inventory": "Tillgången skrivs ned till sitt realiserbara värde."
+    },
+    "keyPoint": "Resultatet sjunker med {abs:net_income}, men kassan ökar med {net_change_cash} tack vare den lägre skatten. Nedskrivningen syns i rörelsekapitalet: ett mindre varulager frigör kassa på pappret."
+  },
+  "e17-asset-sale-gain": {
+    "title": "Anläggningstillgång säljs med vinst",
+    "event": "Bolaget säljer en maskin med bokfört värde 100 för 130 kontant.",
+    "assumptions": [
+      "Bolaget är lönsamt, så en ändring av resultatet före skatt ändrar skatten.",
+      "Skatten betalas kontant under samma period.",
+      "Vinsten är skattepliktig."
+    ],
+    "notes": {
+      "ppe": "Maskinen lämnar balansräkningen till bokfört värde.",
+      "asset_sale_proceeds": "Hela försäljningspriset är en inbetalning under investeringar.",
+      "gain_on_sale": "Försäljningspris minus bokfört värde (reavinst, capital gain)."
+    },
+    "keyPoint": "Vinsten på 30 återförs i det löpande kassaflödet, eftersom hela 130 redan finns under investeringar. Annars skulle den räknas två gånger. Netto i kassan är 130 minus skatt på {tax}."
+  },
+  "e18-asset-sale-loss": {
+    "title": "Anläggningstillgång säljs med förlust",
+    "event": "Bolaget säljer en maskin med bokfört värde 100 för 70 kontant.",
+    "assumptions": [
+      "Bolaget är lönsamt, så förlusten sänker skatten.",
+      "Skatten betalas kontant."
+    ],
+    "notes": {
+      "ppe": "Maskinen lämnar balansräkningen till bokfört värde.",
+      "asset_sale_proceeds": "Bara de 70 som erhålls är en inbetalning.",
+      "gain_on_sale": "Försäljningspris minus bokfört värde (reaförlust), visas som en negativ vinst."
+    },
+    "keyPoint": "Förlusten på 30 är ingen kontant kostnad, så den läggs tillbaka i det löpande kassaflödet. Likviden är {asset_sale_proceeds}, och den enda andra kassaeffekten är en skattebesparing på {abs:tax}."
+  },
+  "e19-buyback": {
+    "title": "Aktieåterköp",
+    "event": "Bolaget köper tillbaka egna aktier för 100 kontant och makulerar dem.",
+    "notes": {
+      "equity_issuance": "Utbetalning under finansiering, visas som ett negativt tal (återköp, buyback).",
+      "share_capital": "Eget kapital minskar. Återköpet är ingen kostnad."
+    },
+    "keyPoint": "Ett återköp fungerar som en utdelning i kassaflödet: kassan lämnar bolaget via finansiering och eget kapital minskar lika mycket. Resultatet påverkas inte."
+  },
+  "e20-lease": {
+    "title": "Nytt leasingavtal enligt IFRS 16",
+    "event": "Bolaget tecknar ett leasingavtal (lease) för en lagerlokal. Nuvärdet av betalningarna är 100. Ingen betalning sker vid tecknandet.",
+    "assumptions": [
+      "Avtalet redovisas i balansräkningen enligt IFRS 16.",
+      "Ingen kostnad uppstår vid tecknandet."
+    ],
+    "notes": {
+      "rou": "Rätten att använda lagerlokalen är en tillgång (right-of-use asset).",
+      "lease_liabilities": "Skyldigheten att betala är en skuld (lease liability)."
+    },
+    "keyPoint": "Att teckna ett leasingavtal är en transaktion utan kassaflöde. Båda sidor av balansräkningen växer med 100, och varken resultat eller kassa ändras."
+  },
+  "e21-tax-payable": {
+    "title": "Skatt som inte är betald än",
+    "event": "Bolaget får 200 i extra intäkter, betalda kontant. Kostnader bortses från. Skatten på vinsten betalas först nästa period.",
+    "assumptions": [
+      "Skatten kostnadsförs nu och betalas senare."
+    ],
+    "notes": {
+      "revenue": "Erhållen kontant.",
+      "tax_payable": "Skattekostnaden är en skuld till Skatteverket (skatteskuld, tax payable) tills den betalas."
+    },
+    "keyPoint": "Årets resultat är {net_income}, men kassan ökar med hela 200, eftersom skatten på {tax} fortfarande finns kvar i bolaget. Den obetalda skatten ligger i skatteskulden och kommer tillbaka som en utbetalning nästa period."
+  },
+  "e22-machine-depreciated": {
+    "title": "Maskin köps och skrivs av",
+    "events": [
+      "Bolaget köper en maskin för 500 kontant.",
+      "Vid periodens slut skrivs maskinen av med 100."
+    ],
+    "assumptions": [
+      "Bolaget är lönsamt, så en ändring av resultatet före skatt ändrar skatten.",
+      "Skatten betalas kontant under samma period.",
+      "Avskrivningen är avdragsgill."
+    ],
+    "notes": {
+      "ppe": "500 tillkommer, 100 tas bort genom avskrivning.",
+      "capex": "Bara köpet är ett kassaflöde."
+    },
+    "keyPoint": "Köpet är en utbetalning på 500 under investeringar. Avskrivningen är inget kassaflöde, men den sparar skatt på {abs:tax}. Netto i kassan är −500 plus den besparingen."
+  },
+  "e23-credit-then-paid": {
+    "title": "Kreditförsäljning, sedan betalning",
+    "events": [
+      "Bolaget säljer varor för 100 på kredit.",
+      "Kunden betalar fakturan i sin helhet."
+    ],
+    "assumptions": [
+      "Bolaget är lönsamt, så en ändring av resultatet före skatt ändrar skatten.",
+      "Skatten betalas kontant under samma period.",
+      "Varornas kostnad bortses från."
+    ],
+    "notes": {
+      "ar": "+100 vid fakturering, −100 vid betalning. Netto noll."
+    },
+    "keyPoint": "När kunden har betalat är kundfordringarna tillbaka på noll och kassan har ökat med {net_change_cash}, intäkten minus skatt. Det är kassaversionen av vinsten."
+  },
+  "e24-prepay-delivered": {
+    "title": "Förskott, sedan leverans",
+    "events": [
+      "En kund betalar 100 i förskott.",
+      "Varorna levereras. Varornas kostnad bortses från."
+    ],
+    "assumptions": [
+      "Bolaget är lönsamt, så en ändring av resultatet före skatt ändrar skatten.",
+      "Skatten betalas kontant under samma period."
+    ],
+    "notes": {
+      "deferred_revenue": "+100 vid betalning, −100 vid leverans. Netto noll."
+    },
+    "keyPoint": "Pengarna kom i den första händelsen, intäkten i den andra. Efter båda är skulden borta och resultatet är {net_income}. Förändringen i rörelsekapitalet är noll, eftersom skulden på 100 löstes upp i intäkt."
+  },
+  "e25-loan-dividend": {
+    "title": "Lån finansierar utdelning",
+    "events": [
+      "Bolaget lånar 100 av banken.",
+      "Bolaget betalar en utdelning på 100 kontant."
+    ],
+    "notes": {
+      "debt": "Skulderna ökar med 100.",
+      "dividends": "Utdelning ut 100."
+    },
+    "keyPoint": "Kassan ändras inte, men eget kapital minskar med 100 och skulderna ökar med 100. Bolaget har bytt eget kapital mot skuld: skuldsättningen (leverage) har gått upp."
+  },
+  "e26-inventory-loan-sold": {
+    "title": "Lån finansierar lager som säljs",
+    "events": [
+      "Bolaget lånar 200 och köper varulager för 200 kontant.",
+      "Allt varulager säljs för 300 kontant."
+    ],
+    "assumptions": [
+      "Bolaget är lönsamt, så en ändring av resultatet före skatt ändrar skatten.",
+      "Skatten betalas kontant under samma period.",
+      "Ränta bortses från."
+    ],
+    "notes": {
+      "inventory": "+200 köps, −200 säljs. Netto noll."
+    },
+    "keyPoint": "Varulagret är tillbaka på noll. Vinsten är 100 före skatt. Kassan har vuxit med lånet plus vinsten minus skatt. Skulden finns kvar."
+  },
+  "e27-lease-first-year": {
+    "title": "Leasingavtal, första året",
+    "events": [
+      "Bolaget tecknar ett leasingavtal med nuvärde 100.",
+      "Under året skrivs nyttjanderätten av med 20, 5 i ränta betalas och 20 av leasingskulden amorteras kontant."
+    ],
+    "assumptions": [
+      "Bolaget är lönsamt, så en ändring av resultatet före skatt ändrar skatten.",
+      "Skatten betalas kontant under samma period.",
+      "Avskrivning och ränta är avdragsgilla.",
+      "I den här modellen redovisas leasingamorteringar under nettolåneupptagning."
+    ],
+    "notes": {
+      "da": "Avskrivning av nyttjanderätten.",
+      "interest": "Ränta på leasingskulden.",
+      "net_borrowing": "Leasingamorteringen är en utbetalning under finansiering enligt IFRS 16."
+    },
+    "keyPoint": "Enligt IFRS 16 delas leasingkostnaden i avskrivning och ränta, och amorteringen flyttas till finansiering. Det löpande kassaflödet ser bättre ut än enligt gamla regler, och den kontanta kostnaden har bara flyttats längre ned i rapporten."
+  },
+  "e28-sale-tax-deferred": {
+    "title": "Tillgång säljs med vinst, skatten betalas senare",
+    "event": "Bolaget säljer en maskin med bokfört värde 100 för 130 kontant. Skatten på vinsten kostnadsförs nu men betalas nästa period.",
+    "notes": {
+      "gain_on_sale": "Försäljningspris minus bokfört värde.",
+      "tax_payable": "Skatten är kostnadsförd men inte betald än."
+    },
+    "keyPoint": "Jämfört med att betala skatten direkt är kassan högre med skatten, {tax}, och samma belopp ligger i skatteskulden. Årets resultat är detsamma i båda fallen."
+  },
+  "e29-writedowns": {
+    "title": "Lager och goodwill skrivs ned samtidigt",
+    "event": "Bolaget skriver ned varulager med 40 och goodwill med 100 under samma period.",
+    "assumptions": [
+      "Lagernedskrivningen är avdragsgill och bokförs i kostnad sålda varor.",
+      "Goodwillnedskrivningen är inte avdragsgill.",
+      "Skatten betalas kontant."
+    ],
+    "notes": {
+      "cogs": "Lagernedskrivningen.",
+      "impairments": "Goodwillnedskrivningen."
+    },
+    "keyPoint": "Bara lagernedskrivningen sparar skatt: {abs:tax}. Båda nedskrivningarna är utan kassaflöde, så kassan ökar med det beloppet, trots att årets resultat sjunker med {abs:net_income}."
+  },
+  "e30-debt-buyback-year": {
+    "title": "Skuldfinansierat återköp och ett års ränta",
+    "events": [
+      "Bolaget lånar 300 och använder hela beloppet till att köpa tillbaka aktier.",
+      "Vid årets slut betalar bolaget 15 i ränta på det nya lånet kontant."
+    ],
+    "assumptions": [
+      "Bolaget är lönsamt, så en ändring av resultatet före skatt ändrar skatten.",
+      "Skatten betalas kontant under samma period.",
+      "Räntan är helt avdragsgill."
+    ],
+    "notes": {
+      "interest": "En finansiell kostnad på det nya lånet.",
+      "share_capital": "Eget kapital minskar genom återköpet."
+    },
+    "keyPoint": "Själva återköpet är kassaneutralt. Kostnaden kommer ett steg senare, som ränta som sänker resultatet med {abs:net_income} efter skatt. Mer skuld och mindre eget kapital betyder högre skuldsättning."
+  }
+}

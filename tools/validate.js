@@ -17,7 +17,10 @@ const Engine = require('../js/engine.js');
 const root = path.join(__dirname, '..');
 const linesData = JSON.parse(fs.readFileSync(path.join(root, 'data/lines.json'), 'utf8'));
 const exData = JSON.parse(fs.readFileSync(path.join(root, 'data/exercises.json'), 'utf8'));
+const svData = JSON.parse(fs.readFileSync(path.join(root, 'data/exercises.sv.json'), 'utf8'));
 const only = process.argv[2];
+const lang = process.argv[3] === 'sv' ? 'sv' : 'en';
+Engine.setLang(lang);
 
 let failed = 0;
 const report = Engine.validateAll(linesData, exData);
@@ -31,9 +34,25 @@ report.forEach((r) => {
   }
 });
 
+// Swedish translations must match their exercises, and no text may contain dashes used as punctuation.
+exData.exercises.forEach((ex) => {
+  const problems = Engine.validateTranslation(ex, svData[ex.id]);
+  const text = JSON.stringify([ex, svData[ex.id]]);
+  if (/[—–]/.test(text)) problems.push('contains an em or en dash; use a comma, semicolon or new sentence');
+  if (problems.length) {
+    failed++;
+    console.log('FAIL ' + ex.id + ' (translation)');
+    problems.forEach((p) => console.log('     - ' + p));
+  }
+});
+Object.keys(svData).forEach((id) => {
+  if (!exData.exercises.some((ex) => ex.id === id)) { failed++; console.log('FAIL sv entry without exercise: ' + id); }
+});
+
 const t = Engine.DEFAULT_TAX_RATE;
 exData.exercises
   .filter((ex) => !only || ex.id === only)
+  .map((ex) => Engine.localize(ex, svData, lang))
   .forEach((ex) => {
     const v = Engine.solve(ex, t).values;
     console.log('\n' + ex.id + ' at ' + Engine.fmtPct(t));
@@ -44,7 +63,7 @@ exData.exercises
         .forEach((l) => {
           const val = v[l.id] || 0;
           if (val !== 0 || l.kind !== 'item') {
-            console.log('    ' + l.label.padEnd(38) + Engine.fmtSigned(val).padStart(9));
+            console.log('    ' + Engine.lineLabel(l).padEnd(38) + Engine.fmtSigned(val).padStart(9));
           }
         });
     });

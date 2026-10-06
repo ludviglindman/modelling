@@ -20,6 +20,109 @@
   var DEFAULT_TAX_RATE = 0.206;
   var TOLERANCE = 0.051;
 
+  // ---------- Language ----------
+  var LANG = 'en';
+  var STR = {
+    en: {
+      isNothing: 'Nothing in the income statement changes, so EBIT, tax and net income are all 0.',
+      taxFormula: 'Tax = {pct} × EBT = {pct} × {ebt} = {tax}',
+      taxFormulaND: 'Tax = {pct} × (EBT + non-deductible costs) = {pct} × ({ebt} + {nd}) = {tax}',
+      taxWhyDown: 'Lower pre-tax profit means lower tax.',
+      taxWhyUp: 'Higher pre-tax profit means higher tax.',
+      taxWhyFlat: 'Taxable profit does not change.',
+      taxND: '{nd} of the cost is not tax deductible.',
+      cfStartNI: 'Start from net income: {v}.',
+      cfStartZero: 'Net income does not change, so the starting point is 0.',
+      cfAddBack: 'Add back D&A and impairments. They lowered net income but are not cash: {v}.',
+      cfGainPos: 'Remove the gain on the sale. The cash received is shown in investing instead: {v}.',
+      cfGainNeg: 'Add back the loss on the sale. It is not a cash outflow: {v}.',
+      wcText: 'An asset that grows ties up cash (−). A liability that grows frees up cash (+).',
+      noCFI: 'No investing cash flows.',
+      noCFF: 'No financing cash flows.',
+      bsCash: 'Cash is the change in cash from the cash flow statement: {v}.',
+      bsTaxUnpaid: 'The tax is not paid yet, so tax payable changes by the tax expense: {v}.',
+      reDefault: 'Net income ends up in equity.',
+      bsBalance: 'Assets {a} and liabilities plus equity {b}. The balance sheet balances.',
+      lblDivPaid: 'Dividends paid',
+      lblDirectEquity: 'Direct equity entry',
+      secIS: 'Income statement', secCF: 'Cash flow statement', secBS: 'Balance sheet',
+      abbrIS: 'IS', abbrCF: 'CF', abbrBS: 'BS'
+    },
+    sv: {
+      isNothing: 'Inget i resultaträkningen ändras, så EBIT, skatt och årets resultat är 0.',
+      taxFormula: 'Skatt = {pct} × EBT = {pct} × {ebt} = {tax}',
+      taxFormulaND: 'Skatt = {pct} × (EBT + ej avdragsgilla kostnader) = {pct} × ({ebt} + {nd}) = {tax}',
+      taxWhyDown: 'Lägre resultat före skatt ger lägre skatt.',
+      taxWhyUp: 'Högre resultat före skatt ger högre skatt.',
+      taxWhyFlat: 'Skattepliktigt resultat ändras inte.',
+      taxND: '{nd} av kostnaden är inte avdragsgill.',
+      cfStartNI: 'Utgå från årets resultat: {v}.',
+      cfStartZero: 'Årets resultat ändras inte, så utgångspunkten är 0.',
+      cfAddBack: 'Lägg tillbaka av- och nedskrivningar. De sänkte årets resultat men är inte kontanta: {v}.',
+      cfGainPos: 'Ta bort reavinsten. Likviden visas i stället under investeringar: {v}.',
+      cfGainNeg: 'Lägg tillbaka reaförlusten. Den är ingen kontant utbetalning: {v}.',
+      wcText: 'En tillgång som växer binder kassa (−). En skuld som växer frigör kassa (+).',
+      noCFI: 'Inga investeringsflöden.',
+      noCFF: 'Inga finansieringsflöden.',
+      bsCash: 'Likvida medel är kassaförändringen från kassaflödesanalysen: {v}.',
+      bsTaxUnpaid: 'Skatten är inte betald än, så skatteskulden ändras med skattekostnaden: {v}.',
+      reDefault: 'Årets resultat hamnar i eget kapital.',
+      bsBalance: 'Tillgångar {a} och skulder plus eget kapital {b}. Balansräkningen balanserar.',
+      lblDivPaid: 'Utbetald utdelning',
+      lblDirectEquity: 'Direkt bokning mot eget kapital',
+      secIS: 'Resultaträkning', secCF: 'Kassaflödesanalys', secBS: 'Balansräkning',
+      abbrIS: 'RR', abbrCF: 'KA', abbrBS: 'BR'
+    }
+  };
+
+  function setLang(l) { LANG = STR[l] ? l : 'en'; }
+  function getLang() { return LANG; }
+
+  function T(key, vars) {
+    var s = (STR[LANG] && STR[LANG][key]) || STR.en[key] || key;
+    return s.replace(/\{(\w+)\}/g, function (m, k) { return vars && k in vars ? vars[k] : m; });
+  }
+
+  function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+  function lineLabel(l) { return LANG === 'sv' ? cap(l.sv) : l.label; }
+  function lineSub(l) { return LANG === 'sv' ? l.label : l.sv; }
+  function shortLabel(l) { return LANG === 'sv' ? (l.shortSv || cap(l.sv)) : l.short; }
+
+  // Merge a translation (data/exercises.sv.json entry) over an exercise.
+  function localize(ex, tr, lang) {
+    var t = tr && tr[ex.id];
+    if (lang === 'en' || !t) return ex;
+    var out = Object.assign({}, ex);
+    if (t.title) out.title = t.title;
+    if (t.event) out.event = t.event;
+    if (t.assumptions) out.assumptions = t.assumptions;
+    if (t.keyPoint) out.keyPoint = t.keyPoint;
+    out.notes = Object.assign({}, ex.notes || {}, t.notes || {});
+    if (ex.events) {
+      out.events = ex.events.map(function (e, i) {
+        return Object.assign({}, e, { text: (t.events && t.events[i]) || e.text });
+      });
+    }
+    return out;
+  }
+
+  // Check that a translation matches the exercise it belongs to.
+  function validateTranslation(ex, t) {
+    var p = [];
+    if (!t) return ['no Swedish translation'];
+    if (!t.title) p.push('sv: missing title');
+    if (ex.events) {
+      if (!t.events || t.events.length !== ex.events.length) p.push('sv: events must have ' + ex.events.length + ' texts');
+    } else if (!t.event) p.push('sv: missing event text');
+    if ((ex.assumptions || []).length !== (t.assumptions || []).length) p.push('sv: assumptions count differs from English');
+    var en = Object.keys(ex.notes || {}).sort().join(',');
+    var sv = Object.keys(t.notes || {}).sort().join(',');
+    if (en !== sv) p.push('sv: notes keys differ (' + en + ' vs ' + sv + ')');
+    var ph = function (s) { return (String(s || '').match(/\{[^}]+\}/g) || []).sort().join(' '); };
+    if (ph(ex.keyPoint) !== ph(t.keyPoint)) p.push('sv: keyPoint placeholders differ from English');
+    return p;
+  }
+
   // Lines an exercise may set directly in "inputs".
   var INPUT_LINES = [
     'revenue', 'cogs', 'da', 'impairments', 'gain_on_sale', 'interest',
@@ -181,6 +284,7 @@
     var r = Math.round(x * 100) / 100;
     if (r === 0) return '0';
     var s = Math.abs(r).toFixed(2).replace(/\.?0+$/, '');
+    if (LANG === 'sv') s = s.replace('.', ',');
     return (r < 0 ? '−' : '') + s;
   }
 
@@ -206,7 +310,7 @@
     var notes = ex.notes || {};
     var byId = {};
     linesData.lines.forEach(function (l) { byId[l.id] = l; });
-    var S = function (id) { return byId[id] ? byId[id].short : id; };
+    var S = function (id) { return byId[id] ? shortLabel(byId[id]) : id; };
     var nz = function (x) { return Math.abs(x) > 1e-9; };
 
     function term(sign, id, value, label) {
@@ -235,7 +339,7 @@
     }
 
     function itemStep(id, value) {
-      return { label: byId[id] ? byId[id].label : id, value: fmtSigned(value), text: notes[id] || '' };
+      return { label: byId[id] ? lineLabel(byId[id]) : id, value: fmtSigned(value), text: notes[id] || '' };
     }
 
     var sections = [];
@@ -244,82 +348,80 @@
     var isSteps = [];
     var isTouched = IS_ITEMS.some(function (id) { return nz(v[id]); });
     if (!isTouched) {
-      isSteps.push({ text: 'Nothing in the income statement changes, so EBIT, tax and net income are all 0.' });
+      isSteps.push({ text: T('isNothing') });
     } else {
       IS_ITEMS.forEach(function (id) { if (nz(v[id])) isSteps.push(itemStep(id, v[id])); });
-      isSteps.push({ formula: formula('EBIT', [
+      isSteps.push({ formula: formula(S('ebit'), [
         term(1, 'revenue', v.revenue), term(-1, 'cogs', v.cogs), term(-1, 'da', v.da),
         term(-1, 'impairments', v.impairments), term(1, 'gain_on_sale', v.gain_on_sale)
       ], v.ebit) });
-      isSteps.push({ formula: formula('EBT', [term(1, 'ebit', v.ebit), term(-1, 'interest', v.interest)], v.ebt) });
+      isSteps.push({ formula: formula(S('ebt'), [term(1, 'ebit', v.ebit), term(-1, 'interest', v.interest)], v.ebt) });
       var taxText;
       if (nz(sol.nonDeductible)) {
-        taxText = 'Tax = ' + fmtPct(t) + ' × (EBT + non-deductible costs) = ' + fmtPct(t) + ' × (' + fmt(v.ebt) + ' + ' + paren(sol.nonDeductible) + ') = ' + fmt(v.tax);
+        taxText = T('taxFormulaND', { pct: fmtPct(t), ebt: fmt(v.ebt), nd: paren(sol.nonDeductible), tax: fmt(v.tax) });
       } else {
-        taxText = 'Tax = ' + fmtPct(t) + ' × EBT = ' + fmtPct(t) + ' × ' + paren(v.ebt) + ' = ' + fmt(v.tax);
+        taxText = T('taxFormula', { pct: fmtPct(t), ebt: paren(v.ebt), tax: fmt(v.tax) });
       }
-      var taxWhy = v.tax < 0 ? 'Lower pre-tax profit means lower tax.' : (v.tax > 0 ? 'Higher pre-tax profit means higher tax.' : 'Taxable profit does not change.');
-      if (nz(sol.nonDeductible)) taxWhy += ' ' + fmt(sol.nonDeductible) + ' of the cost is not tax deductible.';
+      var taxWhy = v.tax < 0 ? T('taxWhyDown') : (v.tax > 0 ? T('taxWhyUp') : T('taxWhyFlat'));
+      if (nz(sol.nonDeductible)) taxWhy += ' ' + T('taxND', { nd: fmt(sol.nonDeductible) });
       isSteps.push({ formula: taxText, text: taxWhy });
-      isSteps.push({ formula: formula('Net income', [term(1, 'ebt', v.ebt), term(-1, 'tax', v.tax)], v.net_income) });
+      isSteps.push({ formula: formula(S('net_income'), [term(1, 'ebt', v.ebt), term(-1, 'tax', v.tax)], v.net_income) });
     }
-    sections.push({ title: 'Income statement', abbr: 'IS', steps: isSteps });
+    sections.push({ title: T('secIS'), abbr: T('abbrIS'), steps: isSteps });
 
     // Cash flow statement
     var cfSteps = [];
-    cfSteps.push({ text: nz(v.cf_net_income) ? 'Start from net income: ' + fmtSigned(v.cf_net_income) + '.' : 'Net income does not change, so the starting point is 0.' });
-    if (nz(v.cf_da)) cfSteps.push({ text: 'Add back D&A and impairments. They lowered net income but are not cash: ' + fmtSigned(v.cf_da) + '.' });
+    cfSteps.push({ text: nz(v.cf_net_income) ? T('cfStartNI', { v: fmtSigned(v.cf_net_income) }) : T('cfStartZero') });
+    if (nz(v.cf_da)) cfSteps.push({ text: T('cfAddBack', { v: fmtSigned(v.cf_da) }) });
     if (nz(v.cf_gain)) {
-      cfSteps.push({ text: v.gain_on_sale > 0
-        ? 'Remove the gain on the sale. The cash received is shown in investing instead: ' + fmtSigned(v.cf_gain) + '.'
-        : 'Add back the loss on the sale. It is not a cash outflow: ' + fmtSigned(v.cf_gain) + '.' });
+      cfSteps.push({ text: T(v.gain_on_sale > 0 ? 'cfGainPos' : 'cfGainNeg', { v: fmtSigned(v.cf_gain) }) });
     }
     var wcTerms = [
       term(-1, 'ar', v.ar), term(-1, 'inventory', v.inventory), term(1, 'ap', v.ap),
       term(1, 'deferred_revenue', v.deferred_revenue), term(1, 'tax_payable', v.tax_payable)
     ];
     if (wcTerms.some(function (x) { return nz(x.value); })) {
-      cfSteps.push({ formula: formula('Working capital', wcTerms, v.cf_wc), text: 'An asset that grows ties up cash (−). A liability that grows frees up cash (+).' });
+      cfSteps.push({ formula: formula(S('cf_wc'), wcTerms, v.cf_wc), text: T('wcText') });
     }
-    cfSteps.push({ formula: formula('CFO', [
+    cfSteps.push({ formula: formula(S('cfo'), [
       term(1, 'cf_net_income', v.cf_net_income), term(1, 'cf_da', v.cf_da),
       term(1, 'cf_gain', v.cf_gain), term(1, 'cf_wc', v.cf_wc)
     ], v.cfo) });
     CFI_ITEMS.forEach(function (id) { if (nz(v[id])) cfSteps.push(itemStep(id, v[id])); });
     if (CFI_ITEMS.some(function (id) { return nz(v[id]); })) {
-      cfSteps.push({ formula: formula('CFI', [term(1, 'capex', v.capex), term(1, 'asset_sale_proceeds', v.asset_sale_proceeds)], v.cfi) });
+      cfSteps.push({ formula: formula(S('cfi'), [term(1, 'capex', v.capex), term(1, 'asset_sale_proceeds', v.asset_sale_proceeds)], v.cfi) });
     } else {
-      cfSteps.push({ formula: 'CFI = 0', text: 'No investing cash flows.' });
+      cfSteps.push({ formula: S('cfi') + ' = 0', text: T('noCFI') });
     }
     CFF_ITEMS.forEach(function (id) { if (nz(v[id])) cfSteps.push(itemStep(id, v[id])); });
     if (CFF_ITEMS.some(function (id) { return nz(v[id]); })) {
-      cfSteps.push({ formula: formula('CFF', [term(1, 'net_borrowing', v.net_borrowing), term(1, 'equity_issuance', v.equity_issuance), term(1, 'dividends', v.dividends)], v.cff) });
+      cfSteps.push({ formula: formula(S('cff'), [term(1, 'net_borrowing', v.net_borrowing), term(1, 'equity_issuance', v.equity_issuance), term(1, 'dividends', v.dividends)], v.cff) });
     } else {
-      cfSteps.push({ formula: 'CFF = 0', text: 'No financing cash flows.' });
+      cfSteps.push({ formula: S('cff') + ' = 0', text: T('noCFF') });
     }
-    cfSteps.push({ formula: formula('Change in cash', [term(1, 'cfo', v.cfo), term(1, 'cfi', v.cfi), term(1, 'cff', v.cff)], v.net_change_cash, true) });
-    sections.push({ title: 'Cash flow statement', abbr: 'CF', steps: cfSteps });
+    cfSteps.push({ formula: formula(S('net_change_cash'), [term(1, 'cfo', v.cfo), term(1, 'cfi', v.cfi), term(1, 'cff', v.cff)], v.net_change_cash, true) });
+    sections.push({ title: T('secCF'), abbr: T('abbrCF'), steps: cfSteps });
 
     // Balance sheet
     var bsSteps = [];
-    bsSteps.push({ text: 'Cash is the change in cash from the cash flow statement: ' + fmtSigned(v.cash) + '.' });
+    bsSteps.push({ text: T('bsCash', { v: fmtSigned(v.cash) }) });
     BS_INPUTS.forEach(function (id) {
       var direct = inp[id] || 0;
       if (nz(direct)) bsSteps.push(itemStep(id, direct));
     });
     if (sol.taxUnpaid && nz(v.tax)) {
-      bsSteps.push({ text: 'The tax is not paid yet, so tax payable changes by the tax expense: ' + fmtSigned(v.tax) + '.' });
+      bsSteps.push({ text: T('bsTaxUnpaid', { v: fmtSigned(v.tax) }) });
     }
-    var reTerms = [term(1, 'net_income', v.net_income), term(-1, 'dividends', -v.dividends, 'Dividends paid')];
-    if (nz(inp.retained_earnings || 0)) reTerms.push(term(1, 'retained_earnings', inp.retained_earnings, 'Direct equity entry'));
+    var reTerms = [term(1, 'net_income', v.net_income), term(-1, 'dividends', -v.dividends, T('lblDivPaid'))];
+    if (nz(inp.retained_earnings || 0)) reTerms.push(term(1, 'retained_earnings', inp.retained_earnings, T('lblDirectEquity')));
     bsSteps.push({
-      formula: formula('Retained earnings', reTerms, v.retained_earnings),
-      text: notes.retained_earnings || 'Net income ends up in equity.'
+      formula: formula(S('retained_earnings'), reTerms, v.retained_earnings),
+      text: notes.retained_earnings || T('reDefault')
     });
-    bsSteps.push({ formula: formula('Total assets', ASSET_ITEMS.map(function (id) { return term(1, id, v[id]); }), v.total_assets) });
-    bsSteps.push({ formula: formula('Total liabilities and equity', LE_ITEMS.map(function (id) { return term(1, id, v[id]); }), v.total_le) });
-    bsSteps.push({ text: 'Assets ' + fmtSigned(v.total_assets) + ' and liabilities plus equity ' + fmtSigned(v.total_le) + '. The balance sheet balances.' });
-    sections.push({ title: 'Balance sheet', abbr: 'BS', steps: bsSteps });
+    bsSteps.push({ formula: formula(S('total_assets'), ASSET_ITEMS.map(function (id) { return term(1, id, v[id]); }), v.total_assets) });
+    bsSteps.push({ formula: formula(S('total_le'), LE_ITEMS.map(function (id) { return term(1, id, v[id]); }), v.total_le) });
+    bsSteps.push({ text: T('bsBalance', { a: fmtSigned(v.total_assets), b: fmtSigned(v.total_le) }) });
+    sections.push({ title: T('secBS'), abbr: T('abbrBS'), steps: bsSteps });
 
     return { sections: sections, keyPoint: fill(ex.keyPoint || '', v, t) };
   }
@@ -343,6 +445,14 @@
     grade: grade,
     userChecks: userChecks,
     explain: explain,
+    setLang: setLang,
+    getLang: getLang,
+    T: T,
+    localize: localize,
+    validateTranslation: validateTranslation,
+    lineLabel: lineLabel,
+    lineSub: lineSub,
+    shortLabel: shortLabel,
     fmt: fmt,
     fmtSigned: fmtSigned,
     fmtPct: fmtPct
