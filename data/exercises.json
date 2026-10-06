@@ -1,0 +1,24 @@
+{
+  "exercises": [
+    {
+      "id": "e01-depreciation",
+      "level": 1,
+      "title": "Depreciation increases",
+      "event": "Depreciation (avskrivningar) increases by 100. Walk the change through all three statements.",
+      "assumptions": [
+        "The company is profitable, so lower pre-tax profit means lower tax.",
+        "Tax is paid in cash in the same period.",
+        "Book depreciation equals tax depreciation, so all of it is tax deductible."
+      ],
+      "inputs": {
+        "da": 100,
+        "ppe": -100
+      },
+      "notes": {
+        "da": "An expense in the income statement. No cash leaves the company.",
+        "ppe": "Depreciation lowers the book value of the machines."
+      },
+      "keyPoint": "Profit falls but cash rises. Depreciation is not a cash cost, yet it lowers taxable profit. The lower tax bill, {abs:tax}, is the only cash effect."
+    }
+  ]
+}

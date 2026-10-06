@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Three-Statement Flow Trainer</title>
+<meta name="description" content="Free practice: walk an event through the income statement, cash flow statement and balance sheet, then check every line.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Familjen+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand">
+      <span class="brand-name">Flow Trainer</span>
+      <span class="brand-tag">IS · CF · BS</span>
+    </div>
+    <div class="controls">
+      <div class="control">
+        <label for="exercise">Exercise</label>
+        <select id="exercise"></select>
+      </div>
+      <div class="control">
+        <label for="taxRate">Tax rate</label>
+        <div class="rate" id="rateBox">
+          <input id="taxRate" type="text" inputmode="decimal" value="20.6" autocomplete="off" title="Swedish corporate tax is 20.6%">
+          <span aria-hidden="true">%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="fatal" class="fatal" role="alert" hidden></div>
+
+  <section class="event" id="event" aria-live="polite">
+    <div class="event-meta">
+      <span id="eventMeta">Loading exercise</span>
+    </div>
+    <h1 id="eventTitle">Three-statement flow trainer</h1>
+    <p class="event-text" id="eventText">An event happens. You enter its effect on every line of the income statement, the cash flow statement and the balance sheet.</p>
+    <ul class="assumptions" id="assumptions"></ul>
+    <p class="how">
+      <b>Enter the change on each line.</b> Leave a line blank if it does not change.
+      Increase is +, decrease is −. The ± button flips the sign.
+    </p>
+  </section>
+
+  <div class="statements" id="statements"></div>
+
+  <section class="solution" id="solution" hidden>
+    <h2>Solution</h2>
+    <p class="keypoint" id="keyPoint"></p>
+    <div id="solutionSteps"></div>
+  </section>
+</main>
+
+<div class="bar" role="region" aria-label="Checks">
+  <div class="wrap">
+    <ul class="checks" id="checks">
+      <li class="chip" id="chkBalance"><span class="full">Balance sheet balances</span><span class="short">Balances</span><span class="v"></span></li>
+      <li class="chip" id="chkCash"><span class="full">Cash ties to CF</span><span class="short">Cash ties</span><span class="v"></span></li>
+      <li class="chip" id="chkNi"><span class="full">Net income ties</span><span class="short">NI ties</span><span class="v"></span></li>
+    </ul>
+    <div class="actions">
+      <span class="score" id="score" aria-live="polite"></span>
+      <button class="btn" id="clearBtn" type="button">Clear</button>
+      <button class="btn" id="nextBtn" type="button" hidden>Next exercise</button>
+      <button class="btn primary" id="checkBtn" type="button">Check answers</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/engine.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
