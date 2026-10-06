@@ -19,6 +19,623 @@
         "ppe": "Depreciation lowers the book value of the machines."
       },
       "keyPoint": "Profit falls but cash rises. Depreciation is not a cash cost, yet it lowers taxable profit. The lower tax bill, {abs:tax}, is the only cash effect."
+    },
+    {
+      "id": "e02-inventory-cash",
+      "level": 1,
+      "title": "Inventory bought for cash",
+      "event": "The company buys inventory (varulager) for 100 and pays in cash.",
+      "assumptions": [
+        "Nothing is sold yet."
+      ],
+      "inputs": {
+        "inventory": 100
+      },
+      "notes": {
+        "inventory": "Inventory is an asset, so it increases by the purchase price.",
+        "ar": ""
+      },
+      "keyPoint": "No profit effect: buying inventory is not a cost until the goods are sold. Cash only changes form, from cash to inventory. The cash flow statement shows it as a working capital (rörelsekapital) outflow."
+    },
+    {
+      "id": "e03-inventory-credit",
+      "level": 1,
+      "title": "Inventory bought on credit",
+      "event": "The company buys inventory for 100 and receives the invoice, to be paid next period.",
+      "assumptions": [
+        "Nothing is sold yet."
+      ],
+      "inputs": {
+        "inventory": 100,
+        "ap": 100
+      },
+      "notes": {
+        "inventory": "The goods are in the warehouse, so inventory increases.",
+        "ap": "The invoice is unpaid, so accounts payable (leverantörsskulder) increases."
+      },
+      "keyPoint": "Nothing happens to profit or cash. Inventory and accounts payable both grow by 100, so working capital changes by +100 − 100 = 0."
+    },
+    {
+      "id": "e04-inventory-sold-profit",
+      "level": 1,
+      "title": "Inventory sold at a profit",
+      "event": "The company sells inventory that cost 100 for 150, paid in cash by the customer.",
+      "assumptions": [
+        "The company is profitable, so a change in pre-tax profit changes tax.",
+        "Tax is paid in cash in the same period."
+      ],
+      "inputs": {
+        "revenue": 150,
+        "cogs": 100,
+        "inventory": -100
+      },
+      "notes": {
+        "revenue": "The sales price.",
+        "cogs": "The cost of the goods that left the warehouse (kostnad sålda varor).",
+        "inventory": "The goods are gone, so inventory falls by their cost."
+      },
+      "keyPoint": "The cash in is 150 less the tax on the 50 profit, which is {abs:tax}. The inventory released, 100, shows up as a positive working capital item, because an asset shrank."
+    },
+    {
+      "id": "e05-machine-cash",
+      "level": 1,
+      "title": "Machine bought for cash",
+      "event": "The company buys a machine for 100 and pays in cash.",
+      "assumptions": [
+        "No depreciation yet in the period."
+      ],
+      "inputs": {
+        "ppe": 100,
+        "capex": -100
+      },
+      "notes": {
+        "ppe": "A new asset is recognised at its purchase price.",
+        "capex": "Investing cash outflow (investeringar), shown as a negative number."
+      },
+      "keyPoint": "No effect on profit. Cash leaves through investing activities and the same amount appears in PP&E, so total assets are unchanged."
+    },
+    {
+      "id": "e06-machine-loan",
+      "level": 1,
+      "title": "Machine bought with a loan",
+      "event": "The company buys a machine for 100, paid in full by a new bank loan of 100.",
+      "assumptions": [
+        "The loan is drawn and the supplier is paid in the same period.",
+        "Interest is ignored in this period."
+      ],
+      "inputs": {
+        "ppe": 100,
+        "capex": -100,
+        "net_borrowing": 100,
+        "debt": 100
+      },
+      "notes": {
+        "ppe": "New asset at purchase price.",
+        "capex": "The supplier is paid 100, an investing outflow.",
+        "net_borrowing": "The bank pays out 100, a financing inflow.",
+        "debt": "Interest-bearing debt (räntebärande skulder) increases."
+      },
+      "keyPoint": "Investing and financing cash flows cancel, so cash does not change. Both sides of the balance sheet grow by 100."
+    },
+    {
+      "id": "e07-ar-increase",
+      "level": 1,
+      "title": "Sale on credit",
+      "event": "The company sells goods for 100 on credit. The cost of the goods is ignored.",
+      "assumptions": [
+        "The company is profitable, so a change in pre-tax profit changes tax.",
+        "Tax is paid in cash in the same period.",
+        "The customer has not paid yet."
+      ],
+      "inputs": {
+        "revenue": 100,
+        "ar": 100
+      },
+      "notes": {
+        "revenue": "Revenue is recognised when the goods are delivered, not when the customer pays.",
+        "ar": "The customer owes 100, so accounts receivable (kundfordringar) increases."
+      },
+      "keyPoint": "Profit is {net_income} but the cash flow is only {net_change_cash}. The company pays tax of {abs:tax} on revenue it has not been paid for yet; the rest of the profit is stuck in receivables."
+    },
+    {
+      "id": "e08-ap-increase",
+      "level": 1,
+      "title": "Cost on credit",
+      "event": "The company receives services worth 100, booked as a cost of goods sold, and the supplier invoice is unpaid.",
+      "assumptions": [
+        "The company is profitable, so a change in pre-tax profit changes tax.",
+        "Tax is paid in cash in the same period."
+      ],
+      "inputs": {
+        "cogs": 100,
+        "ap": 100
+      },
+      "notes": {
+        "cogs": "A cost in the income statement.",
+        "ap": "The company owes the supplier 100."
+      },
+      "keyPoint": "Profit falls by {abs:net_income}, but cash rises by {net_change_cash}. The invoice is unpaid, so the 100 cost has not left the company yet; the only real cash effect is the tax saving of {abs:tax}."
+    },
+    {
+      "id": "e09-prepayment",
+      "level": 1,
+      "title": "Customer pays in advance",
+      "event": "A customer pays 100 in advance for goods that will be delivered next period.",
+      "assumptions": [
+        "Nothing is delivered in this period."
+      ],
+      "inputs": {
+        "deferred_revenue": 100
+      },
+      "notes": {
+        "deferred_revenue": "The company has received cash for something it still owes. That makes it a liability (förutbetald intäkt), not revenue."
+      },
+      "keyPoint": "Revenue is zero because nothing is delivered. Cash still rises by 100, via working capital. Cash flow and profit differ, with no change in assets other than cash."
+    },
+    {
+      "id": "e10-loan-drawn",
+      "level": 1,
+      "title": "New loan",
+      "event": "The company borrows 100 from the bank and keeps it as cash.",
+      "inputs": {
+        "net_borrowing": 100,
+        "debt": 100
+      },
+      "notes": {
+        "net_borrowing": "Financing cash inflow.",
+        "debt": "Debt increases by the amount borrowed."
+      },
+      "keyPoint": "A loan is neither revenue nor profit. Cash and debt both grow by 100."
+    },
+    {
+      "id": "e11-loan-repaid",
+      "level": 1,
+      "title": "Loan repaid",
+      "event": "The company repays 100 of a bank loan from its cash.",
+      "inputs": {
+        "net_borrowing": -100,
+        "debt": -100
+      },
+      "notes": {
+        "net_borrowing": "Financing cash outflow, shown as a negative number.",
+        "debt": "Debt falls by the amount repaid."
+      },
+      "keyPoint": "Repaying principal is not an expense. It lowers cash and debt equally. Only interest is in the income statement."
+    },
+    {
+      "id": "e12-interest-paid",
+      "level": 1,
+      "title": "Interest paid",
+      "event": "The company pays 10 of interest (räntekostnad) in cash on its loans.",
+      "assumptions": [
+        "The company is profitable, so a change in pre-tax profit changes tax.",
+        "Tax is paid in cash in the same period.",
+        "Interest is fully tax deductible."
+      ],
+      "inputs": {
+        "interest": 10
+      },
+      "notes": {
+        "interest": "A financial cost below EBIT."
+      },
+      "keyPoint": "Interest lowers EBT by 10, so tax falls by {abs:tax}. The cash cost is therefore 10 less the tax saving, {abs:net_change_cash}, which equals the fall in net income."
+    },
+    {
+      "id": "e13-share-issue",
+      "level": 1,
+      "title": "Share issue",
+      "event": "The company issues new shares and receives 100 in cash.",
+      "inputs": {
+        "equity_issuance": 100,
+        "share_capital": 100
+      },
+      "notes": {
+        "equity_issuance": "Financing cash inflow.",
+        "share_capital": "Paid-in equity increases. This is not retained earnings, since it is not profit."
+      },
+      "keyPoint": "Raising equity does not touch the income statement. Cash and equity both rise by 100."
+    },
+    {
+      "id": "e14-dividend",
+      "level": 1,
+      "title": "Dividend paid",
+      "event": "The company pays a dividend (utdelning) of 100 in cash.",
+      "inputs": {
+        "dividends": -100
+      },
+      "notes": {
+        "dividends": "Financing cash outflow, shown as a negative number."
+      },
+      "keyPoint": "A dividend is not an expense. It never touches the income statement, and instead reduces retained earnings directly. Cash and equity both fall by 100."
+    },
+    {
+      "id": "e15-goodwill-impairment",
+      "level": 1,
+      "title": "Goodwill impairment",
+      "event": "The company writes down goodwill (goodwill) by 100 after an acquisition underperforms.",
+      "assumptions": [
+        "Goodwill impairments are not tax deductible in Sweden.",
+        "The company is otherwise profitable.",
+        "Tax is paid in cash."
+      ],
+      "inputs": {
+        "impairments": 100,
+        "goodwill": -100
+      },
+      "nonDeductible": 100,
+      "notes": {
+        "impairments": "A non-cash cost in the income statement (nedskrivning).",
+        "goodwill": "The asset is written down by the same amount."
+      },
+      "keyPoint": "Net income falls by the full 100, since the cost is not deductible and tax stays at {tax}. Cash does not change: the impairment is added back in the cash flow statement."
+    },
+    {
+      "id": "e16-inventory-writedown",
+      "level": 1,
+      "title": "Inventory write-down",
+      "event": "Part of the inventory has become obsolete. The company writes it down by 40.",
+      "assumptions": [
+        "The company is profitable, so a change in pre-tax profit changes tax.",
+        "Tax is paid in cash in the same period.",
+        "The write-down is tax deductible."
+      ],
+      "inputs": {
+        "cogs": 40,
+        "inventory": -40
+      },
+      "notes": {
+        "cogs": "An inventory write-down is booked in COGS here, not as an impairment line.",
+        "inventory": "The asset falls to its realisable value."
+      },
+      "keyPoint": "Profit falls by {abs:net_income}, but cash rises by {net_change_cash} because of the lower tax. The write-down appears in working capital: a smaller inventory frees up cash on paper."
+    },
+    {
+      "id": "e17-asset-sale-gain",
+      "level": 1,
+      "title": "Asset sold at a gain",
+      "event": "The company sells a machine with a book value of 100 for 130 in cash.",
+      "assumptions": [
+        "The company is profitable, so a change in pre-tax profit changes tax.",
+        "Tax is paid in cash in the same period.",
+        "The gain is taxable."
+      ],
+      "inputs": {
+        "ppe": -100,
+        "asset_sale_proceeds": 130,
+        "gain_on_sale": 30
+      },
+      "notes": {
+        "ppe": "The machine leaves the balance sheet at book value.",
+        "asset_sale_proceeds": "The whole selling price is an investing inflow.",
+        "gain_on_sale": "Selling price less book value (reavinst)."
+      },
+      "keyPoint": "The gain of 30 is reversed in operating cash flow, since the full 130 is already in investing. Otherwise it would be counted twice. Net cash is 130 less tax of {tax}."
+    },
+    {
+      "id": "e18-asset-sale-loss",
+      "level": 1,
+      "title": "Asset sold at a loss",
+      "event": "The company sells a machine with a book value of 100 for 70 in cash.",
+      "assumptions": [
+        "The company is profitable, so the loss lowers tax.",
+        "Tax is paid in cash."
+      ],
+      "inputs": {
+        "ppe": -100,
+        "asset_sale_proceeds": 70,
+        "gain_on_sale": -30
+      },
+      "notes": {
+        "ppe": "The machine leaves the balance sheet at book value.",
+        "asset_sale_proceeds": "Only the 70 received is a cash inflow.",
+        "gain_on_sale": "Selling price less book value (reaförlust), shown as a negative gain."
+      },
+      "keyPoint": "The loss of 30 is not a cash cost, so it is added back in operating cash flow. The cash received is {asset_sale_proceeds}, and the only other cash effect is a tax saving of {abs:tax}."
+    },
+    {
+      "id": "e19-buyback",
+      "level": 1,
+      "title": "Share buyback",
+      "event": "The company buys back its own shares for 100 in cash and cancels them.",
+      "inputs": {
+        "equity_issuance": -100,
+        "share_capital": -100
+      },
+      "notes": {
+        "equity_issuance": "Financing cash outflow, shown as a negative number (återköp).",
+        "share_capital": "Equity falls. The buyback is not an expense."
+      },
+      "keyPoint": "A buyback works like a dividend for the cash flow: cash goes out through financing and equity falls by the same amount. Profit is unaffected."
+    },
+    {
+      "id": "e20-lease",
+      "level": 1,
+      "title": "New lease under IFRS 16",
+      "event": "The company signs a lease (leasingavtal) for a warehouse. The present value of the payments is 100. No payment is made on signing.",
+      "assumptions": [
+        "The lease is recognised on the balance sheet under IFRS 16.",
+        "No cost arises on the signing date."
+      ],
+      "inputs": {
+        "rou": 100,
+        "lease_liabilities": 100
+      },
+      "notes": {
+        "rou": "The right to use the warehouse is an asset (nyttjanderätt).",
+        "lease_liabilities": "The obligation to pay is a liability (leasingskuld)."
+      },
+      "keyPoint": "Signing a lease is a non-cash event. Both sides of the balance sheet grow by 100, and neither profit nor cash changes."
+    },
+    {
+      "id": "e21-tax-payable",
+      "level": 1,
+      "title": "Tax not yet paid",
+      "event": "The company earns an extra 200 of revenue, received in cash. Costs are ignored. The tax on the profit is not paid until next period.",
+      "assumptions": [
+        "The tax is recognised as an expense now and paid later."
+      ],
+      "taxSettlement": "payable",
+      "inputs": {
+        "revenue": 200
+      },
+      "notes": {
+        "revenue": "Received in cash.",
+        "tax_payable": "The tax expense is owed to the tax authority (skatteskuld) until it is paid."
+      },
+      "keyPoint": "Net income is {net_income}, but cash rises by the full 200, since the tax of {tax} is still in the company. The unpaid tax sits in tax payable and comes back as a cash outflow next period."
+    },
+    {
+      "id": "e22-machine-depreciated",
+      "level": 2,
+      "title": "Machine bought, then depreciated",
+      "events": [
+        {
+          "text": "The company buys a machine for 500 in cash.",
+          "inputs": {
+            "ppe": 500,
+            "capex": -500
+          }
+        },
+        {
+          "text": "At period end, the machine is depreciated by 100.",
+          "inputs": {
+            "da": 100,
+            "ppe": -100
+          }
+        }
+      ],
+      "assumptions": [
+        "The company is profitable, so a change in pre-tax profit changes tax.",
+        "Tax is paid in cash in the same period.",
+        "Depreciation is tax deductible."
+      ],
+      "notes": {
+        "ppe": "500 added, 100 removed through depreciation.",
+        "capex": "Only the purchase is a cash flow."
+      },
+      "keyPoint": "The purchase is a cash outflow of 500 in investing. The depreciation is not a cash flow, but it saves tax of {abs:tax}. Net cash is −500 plus that saving."
+    },
+    {
+      "id": "e23-credit-then-paid",
+      "level": 2,
+      "title": "Credit sale, then payment",
+      "events": [
+        {
+          "text": "The company sells goods for 100 on credit.",
+          "inputs": {
+            "revenue": 100,
+            "ar": 100
+          }
+        },
+        {
+          "text": "The customer pays the invoice in full.",
+          "inputs": {
+            "ar": -100
+          }
+        }
+      ],
+      "assumptions": [
+        "The company is profitable, so a change in pre-tax profit changes tax.",
+        "Tax is paid in cash in the same period.",
+        "Cost of goods is ignored."
+      ],
+      "notes": {
+        "ar": "+100 when invoiced, −100 when paid. Net zero."
+      },
+      "keyPoint": "Once the customer has paid, receivables are back to zero and cash has risen by {net_change_cash}, the revenue less tax. This is the cash version of the profit."
+    },
+    {
+      "id": "e24-prepay-delivered",
+      "level": 2,
+      "title": "Prepayment, then delivery",
+      "events": [
+        {
+          "text": "A customer pays 100 in advance.",
+          "inputs": {
+            "deferred_revenue": 100
+          }
+        },
+        {
+          "text": "The goods are delivered. The cost of goods is ignored.",
+          "inputs": {
+            "revenue": 100,
+            "deferred_revenue": -100
+          }
+        }
+      ],
+      "assumptions": [
+        "The company is profitable, so a change in pre-tax profit changes tax.",
+        "Tax is paid in cash in the same period."
+      ],
+      "notes": {
+        "deferred_revenue": "+100 on payment, −100 on delivery. Net zero."
+      },
+      "keyPoint": "The cash arrived in the first event, the revenue in the second. After both, the liability is gone and profit is {net_income}. The working capital change is zero, since the 100 liability was released into revenue."
+    },
+    {
+      "id": "e25-loan-dividend",
+      "level": 2,
+      "title": "Loan funds a dividend",
+      "events": [
+        {
+          "text": "The company borrows 100 from the bank.",
+          "inputs": {
+            "net_borrowing": 100,
+            "debt": 100
+          }
+        },
+        {
+          "text": "The company pays a dividend of 100 in cash.",
+          "inputs": {
+            "dividends": -100
+          }
+        }
+      ],
+      "notes": {
+        "debt": "Debt up 100.",
+        "dividends": "Dividend out 100."
+      },
+      "keyPoint": "Cash does not change, but equity falls by 100 and debt rises by 100. The company has swapped equity for debt: leverage (belåning) has gone up."
+    },
+    {
+      "id": "e26-inventory-loan-sold",
+      "level": 2,
+      "title": "Loan funds inventory that is sold",
+      "events": [
+        {
+          "text": "The company borrows 200 and buys inventory for 200 in cash.",
+          "inputs": {
+            "net_borrowing": 200,
+            "debt": 200,
+            "inventory": 200
+          }
+        },
+        {
+          "text": "All the inventory is sold for 300 in cash.",
+          "inputs": {
+            "revenue": 300,
+            "cogs": 200,
+            "inventory": -200
+          }
+        }
+      ],
+      "assumptions": [
+        "The company is profitable, so a change in pre-tax profit changes tax.",
+        "Tax is paid in cash in the same period.",
+        "Interest is ignored."
+      ],
+      "notes": {
+        "inventory": "+200 bought, −200 sold. Net zero."
+      },
+      "keyPoint": "Inventory is back to zero. The profit is 100 before tax. Cash has grown by the loan plus the profit and less tax. Debt remains."
+    },
+    {
+      "id": "e27-lease-first-year",
+      "level": 2,
+      "title": "Lease signed, first year",
+      "events": [
+        {
+          "text": "The company signs a lease with a present value of 100.",
+          "inputs": {
+            "rou": 100,
+            "lease_liabilities": 100
+          }
+        },
+        {
+          "text": "During the year the right-of-use asset is depreciated by 20, interest of 5 is paid, and 20 of the lease liability is repaid in cash.",
+          "inputs": {
+            "da": 20,
+            "rou": -20,
+            "interest": 5,
+            "net_borrowing": -20,
+            "lease_liabilities": -20
+          }
+        }
+      ],
+      "assumptions": [
+        "The company is profitable, so a change in pre-tax profit changes tax.",
+        "Tax is paid in cash in the same period.",
+        "Depreciation and interest are tax deductible.",
+        "In this model lease repayments are shown under net borrowing."
+      ],
+      "notes": {
+        "da": "Depreciation of the right-of-use asset.",
+        "interest": "Interest on the lease liability.",
+        "net_borrowing": "Lease principal is a financing outflow under IFRS 16."
+      },
+      "keyPoint": "Under IFRS 16 the lease cost is split into depreciation and interest, and the principal repayment moves to financing. Operating cash flow looks better than under old rules, and the cash cost is simply moved down the statement."
+    },
+    {
+      "id": "e28-sale-tax-deferred",
+      "level": 3,
+      "title": "Asset sold at a gain, tax paid later",
+      "event": "The company sells a machine with a book value of 100 for 130 in cash. The tax on the gain is expensed now but paid next period.",
+      "taxSettlement": "payable",
+      "inputs": {
+        "ppe": -100,
+        "asset_sale_proceeds": 130,
+        "gain_on_sale": 30
+      },
+      "notes": {
+        "gain_on_sale": "Selling price less book value.",
+        "tax_payable": "The tax has been expensed but not yet paid."
+      },
+      "keyPoint": "Compared with an immediate tax payment, cash is higher by the tax, {tax}, and the same amount sits in tax payable. Net income is the same either way."
+    },
+    {
+      "id": "e29-writedowns",
+      "level": 3,
+      "title": "Inventory and goodwill written down together",
+      "event": "The company writes down inventory by 40 and goodwill by 100 in the same period.",
+      "assumptions": [
+        "The inventory write-down is deductible and is booked in COGS.",
+        "The goodwill impairment is not deductible.",
+        "Tax is paid in cash."
+      ],
+      "nonDeductible": 100,
+      "inputs": {
+        "cogs": 40,
+        "inventory": -40,
+        "impairments": 100,
+        "goodwill": -100
+      },
+      "notes": {
+        "cogs": "The inventory write-down.",
+        "impairments": "The goodwill impairment."
+      },
+      "keyPoint": "Only the inventory write-down saves tax: {abs:tax}. Both write-downs are non-cash, so cash rises by that amount, even though net income falls by {abs:net_income}."
+    },
+    {
+      "id": "e30-debt-buyback-year",
+      "level": 3,
+      "title": "Debt-funded buyback and a year of interest",
+      "events": [
+        {
+          "text": "The company borrows 300 and uses all of it to buy back shares.",
+          "inputs": {
+            "net_borrowing": 300,
+            "debt": 300,
+            "equity_issuance": -300,
+            "share_capital": -300
+          }
+        },
+        {
+          "text": "At year end it pays 15 of interest on the new loan in cash.",
+          "inputs": {
+            "interest": 15
+          }
+        }
+      ],
+      "assumptions": [
+        "The company is profitable, so a change in pre-tax profit changes tax.",
+        "Tax is paid in cash in the same period.",
+        "Interest is fully tax deductible."
+      ],
+      "notes": {
+        "interest": "A financial cost on the new loan.",
+        "share_capital": "Equity is reduced by the buyback."
+      },
+      "keyPoint": "The buyback itself is cash neutral. The cost shows up one step later, as interest that lowers profit by {abs:net_income} after tax. Debt up and equity down means higher leverage."
     }
   ]
 }

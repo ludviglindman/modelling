@@ -8,7 +8,8 @@
     exercises: [],
     index: 0,
     t: E.DEFAULT_TAX_RATE,
-    checked: false
+    checked: false,
+    broken: false
   };
 
   var $ = function (id) { return document.getElementById(id); };
@@ -140,7 +141,9 @@
     }
 
     var problems = E.validateExercise(ex, lineIds());
-    if (problems.length) showFatal('This exercise has a data error. Fix it in data/exercises.json:', problems);
+    state.broken = problems.length > 0;
+    $('checkBtn').disabled = state.broken;
+    if (state.broken) showFatal('This exercise has a data error, so it cannot be graded. Fix it in data/exercises.json:', problems);
 
     clearAnswers();
   }
@@ -172,7 +175,16 @@
   // ---------- Live consistency checks on the user's own numbers ----------
 
   function updateChecks() {
-    var c = E.userChecks(readAnswers());
+    var answers = readAnswers();
+    var bad = 0;
+    allInputs().forEach(function (inp) {
+      var isBad = isNaN(answers[inp.dataset.line]);
+      inp.classList.toggle('bad-num', isBad);
+      if (isBad) { bad++; inp.setAttribute('aria-invalid', 'true'); } else inp.removeAttribute('aria-invalid');
+    });
+    var hint = $('numHint');
+    hint.hidden = bad === 0;
+    var c = E.userChecks(answers);
     paintChip($('chkBalance'), c.balance);
     paintChip($('chkCash'), c.cash);
     paintChip($('chkNi'), c.netIncome);
@@ -194,6 +206,7 @@
   // ---------- Grading and solution ----------
 
   function check() {
+    if (state.broken) return;
     var ex = current();
     var sol = E.solve(ex, state.t);
     var answers = readAnswers();
